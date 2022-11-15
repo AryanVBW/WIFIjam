@@ -28,7 +28,7 @@ A WIFi Jamer , powered by *Aryan*
         -Coming soon
 ## Disclaimer
 <b>Aryan Provides no warranty with this software and will not be responsible for any direct or indirect damage caused due to the usage of this tool.<br>
-L3MON is built for both Educational and Internal use ONLY.</b>
+Wifi Jam is built for both Educational and Internal use ONLY.</b>
 
 <br>
 <p align="center">Made with ❤️ By <a href="https://www.nsa.gov/">*Aryan*</a></p>
