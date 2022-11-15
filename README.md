@@ -26,7 +26,6 @@ A WIFi Jamer , powered by *Aryan*
         -  `su -c "yum install python"`
     - Windows 
         -Coming soon
-## HowToUse
  - git clone https://github.com/AryanVBW/WIFIjam.git
  - cd WIFIjam
  - python3 wifi1.py / wifi2.py
