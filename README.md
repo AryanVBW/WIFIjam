@@ -1,4 +1,4 @@
-# WiFiJam by WhiteDevil----*Aryan*
+
 <p align="center">
 <img src="https://github.com/ARYAN122333/L3MON/blob/main/logo.png" height="60"><br>
 A WIFi Jamer , powered by *Aryan*
