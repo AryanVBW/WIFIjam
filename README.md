@@ -1,7 +1,7 @@
 **Disclaimer** : This software or tool is meant for educational purposes only. we are not responsible for any malicious use of the app.
 <p align="center">
 <img src="https://github.com/AryanVBW/kali-Linux-Android/releases/download/1/removebackground.png" height="150"><br>
-A WIFi Jamer , powered by *Aryan*
+A WIFi Jamer , powered by Python🐍
 </p>
 
 
