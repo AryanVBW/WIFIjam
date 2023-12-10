@@ -26,13 +26,18 @@ A WIFi Jamer , powered by *Aryan*
         -  `su -c "yum install python"`
     - Windows 
         -Coming soon
- - git clone https://github.com/AryanVBW/WIFIjam.git
- - cd WIFIjam
- - python3 wifi1.py / wifi2.py
+```bash 
+ git clone
+ https://github.com/AryanVBW/WIFIjam.git
+ cd WIFIjam
+ python3 wifi1.py 
+```
+   or
+   `python3 wifi1.py`
 ## Disclaimer
 <b>Aryan Provides no warranty with this software and will not be responsible for any direct or indirect damage caused due to the usage of this tool.<br>
 Wifi Jam is built for both Educational and Internal use ONLY.</b>
 
 <br>
-<p align="center">Made with ❤️ By <a href="kalifishing52@gmail.com">*Aryan*</a></p>
+<p align="center">Made with ❤️ By <a href="aryanvbw.github.io">*Aryan*</a></p>
 <p align="center" style="font-size: 8px">v1.1.2</p>
