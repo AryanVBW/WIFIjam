@@ -13,19 +13,15 @@ A WIFi Jamer , powered by *Aryan*
 - deauthentication attack 
 
 ## Prerequisites 
- - python3
-    - See [installation](#Installation) for OS specifics
- - python
- - Monitor mode and Packet injection supported wifi adapter 
-
-## Installation 
-1. Install python3
+ - Monitor mode and Packet injection supported wifi adapter
+ - Install python3
     - Debian, Ubuntu, Etc
         - `sudo apt-get install python3`
     - Fedora, Oracle, Red Hat, etc
         -  `su -c "yum install python"`
     - Windows 
         -Coming soon
+## Installation
 ```bash 
  git clone
  https://github.com/AryanVBW/WIFIjam.git
