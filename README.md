@@ -30,6 +30,11 @@ A WIFi Jamer , powered by Python🐍
 ```
    or
    `python3 wifi2.py`
+
+   <p align="center"> 
+  Visitor count<br>
+  <img src="https://profile-counter.glitch.me/Aryanvbw/count.svg" />
+</p>
 ## Disclaimer
 <b>Aryan Provides no warranty with this software and will not be responsible for any direct or indirect damage caused due to the usage of this tool.<br>
 Wifi Jam is built for both Educational and Internal use ONLY.</b>
