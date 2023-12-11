@@ -35,5 +35,5 @@ A WIFi Jamer , powered by Python🐍
 Wifi Jam is built for both Educational and Internal use ONLY.</b>
 
 <br>
-<p align="center">Made with ❤️ By <a href="aryanvbw.github.io">*Aryan*</a></p>
+<p align="center">Made with ❤️ By <a href="aryanvbw.github.io">*Vivek W*</a></p>
 <p align="center" style="font-size: 8px">v1.1.2</p>
