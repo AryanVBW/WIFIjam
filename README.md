@@ -1,7 +1,7 @@
 
 <p align="center">
 <img src="https://github.com/AryanVBW/kali-Linux-Android/releases/download/1/removebackground.png" height="150"><br>
-A WIFi Jamer , powered by Python🐍
+A WIFi Jamer , powered by Python <img src="" height="100">
 </p>
 
 
