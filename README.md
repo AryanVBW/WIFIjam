@@ -21,7 +21,7 @@ A WIFi Jamer  <img src="https://raw.githubusercontent.com/AryanVBW/WIFIjam/main/
         -  `su -c "yum install python"`
     - Windows 
         -Coming soon
-## Installation
+## <img src="https://raw.githubusercontent.com/AryanVBW/WIFIjam/main/wifiB.png" height="40">Installation
 ```bash 
  git clone
  https://github.com/AryanVBW/WIFIjam.git
