@@ -7,7 +7,7 @@ A WIFi Jamer  <img src="https://raw.githubusercontent.com/AryanVBW/WIFIjam/main/
 
 
 
-## Features
+## <img src="https://raw.githubusercontent.com/AryanVBW/WIFIjam/main/wifiB.png" height="40">Features
 - JAM 2.4Hz wifi or Mobile hostpost
 - Jam 5Hz wifi or Mobile hostpost 
 - deauthentication attack 
