@@ -1,7 +1,7 @@
 
 <p align="center">
 <img src="https://github.com/AryanVBW/kali-Linux-Android/releases/download/1/removebackground.png" height="150"><br>
-A WIFi Jamer , powered by Python <img src="https://raw.githubusercontent.com/AryanVBW/WIFIjam/main/python.png" height="12">
+A WIFi Jamer  <img src="" height="12">, powered by Python <img src="https://raw.githubusercontent.com/AryanVBW/WIFIjam/main/python.png" height="12">
 </p>
 
 
@@ -35,6 +35,7 @@ A WIFi Jamer , powered by Python <img src="https://raw.githubusercontent.com/Ary
   Visitor count<br>
   <img src="https://profile-counter.glitch.me/Aryanvbw/count.svg" />
 </p>
+
 ## Disclaimer
 <b>Aryan Provides no warranty with this software and will not be responsible for any direct or indirect damage caused due to the usage of this tool.<br>
 Wifi Jam is built for both Educational and Internal use ONLY.</b>
