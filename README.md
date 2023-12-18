@@ -23,8 +23,7 @@ A WIFi Jamer  <img src="https://raw.githubusercontent.com/AryanVBW/WIFIjam/main/
         -Coming soon
 ## <img src="https://raw.githubusercontent.com/AryanVBW/WIFIjam/main/wifiB.png" height="40">Installation
 ```bash 
- git clone
- https://github.com/AryanVBW/WIFIjam.git
+ git clone https://github.com/AryanVBW/WIFIjam.git
  cd WIFIjam
  python3 wifi1.py 
 ```
