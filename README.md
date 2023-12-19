@@ -1,6 +1,6 @@
 
 <p align="center">
-<img src="https://raw.githubusercontent.com/AryanVBW/WIFIjam/main/Logo/OIG__21_-removebg-preview.png" height=""><br>
+<img src="https://raw.githubusercontent.com/AryanVBW/WIFIjam/main/Logo/OIG__17_-removebg-preview.png" height="250"><br>
 A WIFi Jamer  <img src="https://raw.githubusercontent.com/AryanVBW/WIFIjam/main/wifiB.png" height="20">, powered by Python <img src="https://raw.githubusercontent.com/AryanVBW/WIFIjam/main/python.png" height="12">
 </p>
 
