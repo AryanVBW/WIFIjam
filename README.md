@@ -44,5 +44,5 @@ Wifi Jam is built for both Educational and Internal use ONLY.</b>
 <p align="center" style="font-size: 8px">v1.1.2</p>
 <p align="center"> 
   Repository Visitors<br>
-  <img src="https://visitor-badge.glitch.me/badge?page_id=aryanvbw.WIFIjam" />
+  <img src="https://visitor-badge.glitch.me/badge?page_id=aryanvbw/WIFIjam" />
 </p>
