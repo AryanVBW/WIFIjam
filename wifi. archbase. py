@@ -1,0 +1,34 @@
+import os
+import subprocess
+import sys
+
+def install_dependencies():
+    try:
+        # Update package list and install required packages
+        distro = get_distro()
+        if distro in ["arch", "manjaro", "garuda"]:
+            subprocess.check_call(["sudo", "pacman", "-Syu", "--noconfirm"])
+            subprocess.check_call(["sudo", "pacman", "-S", "aircrack-ng", "iw", "--noconfirm"])
+        else:
+            subprocess.check_call(["sudo", "apt-get", "update"])
+            subprocess.check_call(["sudo", "apt-get", "install", "-y", "aircrack-ng", "iw"])
+    except subprocess.CalledProcessError as e:
+        print(f"Failed to install dependencies: {e}")
+        sys.exit(1)
+
+def get_distro():
+    try:
+        with open("/etc/os-release") as f:
+            for line in f:
+                if line.startswith("ID="):
+                    return line.split("=")[1].strip().lower().replace('"', '')
+    except Exception as e:
+        print(f"Failed to determine the Linux distribution: {e}")
+        sys.exit(1)
+
+def main():
+    install_dependencies()
+    # Add the rest of your script here
+
+if __name__ == "__main__":
+    main()
