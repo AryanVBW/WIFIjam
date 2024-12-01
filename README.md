@@ -41,8 +41,6 @@ This project was inspired by the incredible YouTube tutorial ”[WIFI Jamming in
 A heartfelt thanks to David Bombal for his fantastic [red python script on GitHub](https://github.com/davidbombal/red-python-scripts), which served as a guiding resource during development.
 
 To the open-source community, developers, and testers: your support makes this project thrive.
-
-Let’s continue exploring the stories hidden within our media files!
 ## Disclaimer
 <b>Aryan Provides no warranty with this software and will not be responsible for any direct or indirect damage caused due to the usage of this tool.<br>
 Wifi Jam is built for both Educational and Internal use ONLY.</b>
