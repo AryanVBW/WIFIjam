@@ -38,7 +38,7 @@ A WIFi Jamer  <img src="https://raw.githubusercontent.com/AryanVBW/WIFIjam/main/
 
 This project was inspired by the incredible YouTube tutorial ”[WIFI Jamming in Python](https://youtu.be/XUncozRGbcs?si=me-KstWB0snLEfs4)” and [Python Network Hacking with Kali Linux and Scapy](https://youtu.be/O1jpck31Ask?si=4h8BinIB1dnRQrQs),  which provided valuable insights into building an Exif data tool.
 
-A heartfelt thanks to David Bombal for his fantastic [exif.py script on GitHub](https://github.com/davidbombal/red-python-scripts), which served as a guiding resource during development.
+A heartfelt thanks to David Bombal for his fantastic [red python script on GitHub](https://github.com/davidbombal/red-python-scripts), which served as a guiding resource during development.
 
 To the open-source community, developers, and testers: your support makes this project thrive.
 
