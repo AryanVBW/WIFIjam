@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WIFIjam Documentation</title>
+  <link rel="stylesheet" href="website/style.css">
+  <link rel="icon" href="Logo/wifiB.png">
+</head>
+<body>
+  <div class="background-animation"></div>
+  <aside class="sidebar">
+    <img src="wifiB.png" alt="Sidebar Logo" class="sidebar-logo-glow">
+    <nav class="sidebar-nav">
+      <a href="index.html" class="active" title="Home"><span class="sidebar-icon-bg"><img src="website/side_bar/wifi-80.png" alt="Home" class="sidebar-icon"></span></a>
+      <a href="website/about.html" title="About"><span class="sidebar-icon-bg"><img src="website/side_bar/about-80.png" alt="About" class="sidebar-icon"></span></a>
+      <a href="website/installation.html" title="Installation"><span class="sidebar-icon-bg"><img src="website/side_bar/drop-down-80.png" alt="Installation" class="sidebar-icon"></span></a>
+      <a href="website/usage.html" title="Usage"><span class="sidebar-icon-bg"><img src="website/side_bar/time-50.png" alt="Usage" class="sidebar-icon"></span></a>
+      <a href="website/credits.html" title="Credits"><span class="sidebar-icon-bg"><img src="website/side_bar/inspiration-80.png" alt="Credits" class="sidebar-icon"></span></a>
+      <a href="website/disclaimer.html" title="Disclaimer"><span class="sidebar-icon-bg"><img src="website/side_bar/disclaimer-80.png" alt="Disclaimer" class="sidebar-icon"></span></a>
+      <a href="website/youtube.html" title="Demo"><span class="sidebar-icon-bg"><img src="website/side_bar/drop-down-80.png" alt="Demo" class="sidebar-icon"></span></a>
+    </nav>
+  </aside>
+  <main>
+    <header>
+      <img src="Logo/OIG__17_-removebg-preview.png" alt="WIFIjam Logo" class="logo">
+      <h1 class="main-title">WIFIjam</h1>
+      <p class="main-subheadline">Unleash the Power of Python WiFi Jamming <span class="jam-blink">⚡️</span></p>
+      <div class="intro-glass">
+        <p class="intro-lead">WIFIjam is a modern, Python-powered WiFi jamming and deauthentication tool designed for security research, testing, and educational use. <br><b>Now with multi-OS support:</b></p>
+        <div class="os-support-list">
+          <span class="os-pill linux">Linux</span>
+          <span class="os-pill arch">Arch</span>
+          <span class="os-pill mac">Mac</span>
+          <span class="os-pill win">Windows 10/11 (WSL2)</span>
+        </div>
+        <p class="intro-desc">Supports 2.4GHz & 5GHz jamming, deauth attacks, and more. <br>Easy setup, beautiful UI, and detailed documentation for all major platforms.</p>
+        <a href="website/installation.html" class="cta-btn">Get Started &rarr;</a>
+      </div>
+    </header>
+    <section id="features">
+      <h2>Features</h2>
+      <ul>
+        <li>Jam 2.4GHz and 5GHz WiFi or Mobile Hotspot networks</li>
+        <li>Deauthentication Attack (kick devices off WiFi)</li>
+        <li>Modern, animated documentation site</li>
+        <li>Multi-OS support: Linux, Arch, Mac, Windows (WSL2)</li>
+        <li>Easy copy-paste install commands for each OS</li>
+      </ul>
+    </section>
+    <section id="installation">
+      <h2>Quick Installation</h2>
+      <p>WIFIjam supports <b>Linux (Debian/Ubuntu)</b>, <b>Arch</b>, <b>Mac</b>, and <b>Windows 10/11 (via WSL2)</b>. For detailed, step-by-step instructions for your OS, visit the <a href="website/installation.html">Installation page</a>.</p>
+      <div class="os-support-list">
+        <span class="os-pill linux">Linux</span>
+        <span class="os-pill arch">Arch</span>
+        <span class="os-pill mac">Mac</span>
+        <span class="os-pill win">Windows 10/11 (WSL2)</span>
+      </div>
+      <div class="install-note glass-note">
+        <b>Tip:</b> Use the sidebar to navigate to Installation, Usage, and more. Make sure your WiFi adapter supports monitor mode and packet injection for full functionality.
+      </div>
+    </section>
+    <section id="usage">
+      <h2>Usage</h2>
+      <ol>
+        <li>Ensure you have a WiFi adapter that supports monitor mode and packet injection.</li>
+        <li>Follow the <a href="website/installation.html">installation instructions</a> for your OS.</li>
+        <li>Run the script with appropriate privileges (often <code>sudo</code> on Linux/Arch, or via WSL2 on Windows).</li>
+        <li>Follow the on-screen prompts to select your interface and target network.</li>
+      </ol>
+    </section>
+    <section id="prerequisites">
+      <h2>Prerequisites</h2>
+      <ul>
+        <li>Monitor mode and packet injection supported WiFi adapter</li>
+        <li>Python 3</li>
+        <li>Linux (Debian, Ubuntu, Fedora, Arch), Mac, or Windows (WSL2)</li>
+        <li>Windows 10/11 (via WSL2, see Installation page for details)</li>
+        <li>aircrack-ng, iw, airmon-ng, airodump-ng, aireplay-ng (see Installation page for details)</li>
+      </ul>
+    </section>
+    <section id="credits">
+      <h2>Credits & Inspiration</h2>
+      <ul>
+        <li>Inspired by <a href="https://youtu.be/XUncozRGbcs?si=me-KstWB0snLEfs4" target="_blank">WIFI Jamming in Python (YouTube)</a></li>
+        <li>Python Network Hacking with Kali Linux and Scapy</li>
+        <li>David Bombal's <a href="https://github.com/davidbombal/red-python-scripts" target="_blank">red python scripts</a></li>
+        <li>Made with ❤️ by <a href="https://aryanvbw.github.io" target="_blank">Vivek W</a></li>
+      </ul>
+    </section>
+    <section id="disclaimer">
+      <h2>Disclaimer</h2>
+      <p><b>This tool is for educational and internal use only. The author provides no warranty and is not responsible for any damage caused by the use of this tool.</b></p>
+    </section>
+  </main>
+  <footer>
+    <p>Visitor count:</p>
+    <img src="https://profile-counter.glitch.me/Aryanvbw/count.svg" alt="Visitor count">
+    <p>v1.1.2 &copy; 2024 Vivek W (AryanVBW)</p>
+  </footer>
+  <script src="website/script.js"></script>
+</body>
+</html> 

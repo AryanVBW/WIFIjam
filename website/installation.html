@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Installation | WIFIjam</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" href="../wifiB.png">
+</head>
+<body>
+  <div class="background-animation"></div>
+  <aside class="sidebar">
+    <img src="../wifiB.png" alt="Sidebar Logo" class="sidebar-logo-glow">
+    <nav class="sidebar-nav">
+      <a href="../index.html" title="Home"><span class="sidebar-icon-bg"><img src="side_bar/wifi-80.png" alt="Home" class="sidebar-icon"></span></a>
+      <a href="about.html" title="About"><span class="sidebar-icon-bg"><img src="side_bar/about-80.png" alt="About" class="sidebar-icon"></span></a>
+      <a href="installation.html" class="active" title="Installation"><span class="sidebar-icon-bg"><img src="side_bar/drop-down-80.png" alt="Installation" class="sidebar-icon"></span></a>
+      <a href="usage.html" title="Usage"><span class="sidebar-icon-bg"><img src="side_bar/time-50.png" alt="Usage" class="sidebar-icon"></span></a>
+      <a href="credits.html" title="Credits"><span class="sidebar-icon-bg"><img src="side_bar/inspiration-80.png" alt="Credits" class="sidebar-icon"></span></a>
+      <a href="disclaimer.html" title="Disclaimer"><span class="sidebar-icon-bg"><img src="side_bar/disclaimer-80.png" alt="Disclaimer" class="sidebar-icon"></span></a>
+     </nav>
+  </aside>
+  <main>
+    <header>
+      <img src="../Logo/OIG__17_-removebg-preview.png" alt="WIFIjam Logo" class="logo">
+      <h1 class="main-title">Installation</h1>
+      <p class="main-subheadline">Get started with WIFIjam in a few easy steps</p>
+    </header>
+    <section>
+      <div class="os-tabs">
+        <button class="os-tab active" data-tab="linux">Linux</button>
+        <button class="os-tab" data-tab="arch">Arch</button>
+        <button class="os-tab" data-tab="mac">Mac</button>
+        <button class="os-tab" data-tab="windows">Windows</button>
+      </div>
+      <div class="os-tab-content active" id="linux">
+        <ol class="install-steps">
+          <li><strong>Check Prerequisites:</strong> Python 3, pip, and a WiFi adapter supporting monitor mode and packet injection.</li>
+          <li><strong>Install dependencies:</strong></li>
+          <div class="code-block-with-copy">
+            <pre><code id="linux-deps">sudo apt update && sudo apt install python3 python3-pip aircrack-ng</code></pre>
+            <button class="copy-btn" data-copytarget="linux-deps">Copy</button>
+          </div>
+          <li><strong>Clone the Repository:</strong></li>
+          <div class="code-block-with-copy">
+            <pre><code id="linux-clone">git clone https://github.com/AryanVBW/WIFIjam.git</code></pre>
+            <button class="copy-btn" data-copytarget="linux-clone">Copy</button>
+          </div>
+          <li><strong>Navigate to the Project Directory:</strong></li>
+          <div class="code-block-with-copy">
+            <pre><code id="linux-cd">cd WIFIjam</code></pre>
+            <button class="copy-btn" data-copytarget="linux-cd">Copy</button>
+          </div>
+          <li><strong>Install Python requirements:</strong></li>
+          <div class="code-block-with-copy">
+            <pre><code id="linux-pip">pip3 install -r requirements.txt</code></pre>
+            <button class="copy-btn" data-copytarget="linux-pip">Copy</button>
+          </div>
+          <li><strong>Run the Tool:</strong></li>
+          <div class="code-block-with-copy">
+            <pre><code id="linux-run">sudo python3 wifi1.py</code></pre>
+            <button class="copy-btn" data-copytarget="linux-run">Copy</button>
+          </div>
+        </ol>
+        <div class="install-note glass-note">
+          <p><b>Note:</b> Most features are tested on Debian/Ubuntu. Use <code>sudo</code> for WiFi operations. Adapter must support monitor mode.</p>
+        </div>
+      </div>
+      <div class="os-tab-content" id="arch">
+        <ol class="install-steps">
+          <li><strong>Check Prerequisites:</strong> Python 3, pip, and a WiFi adapter supporting monitor mode and packet injection.</li>
+          <li><strong>Install dependencies:</strong></li>
+          <div class="code-block-with-copy">
+            <pre><code id="arch-deps">sudo pacman -Syu python python-pip aircrack-ng</code></pre>
+            <button class="copy-btn" data-copytarget="arch-deps">Copy</button>
+          </div>
+          <li><strong>Clone the Repository:</strong></li>
+          <div class="code-block-with-copy">
+            <pre><code id="arch-clone">git clone https://github.com/AryanVBW/WIFIjam.git</code></pre>
+            <button class="copy-btn" data-copytarget="arch-clone">Copy</button>
+          </div>
+          <li><strong>Navigate to the Project Directory:</strong></li>
+          <div class="code-block-with-copy">
+            <pre><code id="arch-cd">cd WIFIjam</code></pre>
+            <button class="copy-btn" data-copytarget="arch-cd">Copy</button>
+          </div>
+          <li><strong>Install Python requirements:</strong></li>
+          <div class="code-block-with-copy">
+            <pre><code id="arch-pip">pip install -r requirements.txt</code></pre>
+            <button class="copy-btn" data-copytarget="arch-pip">Copy</button>
+          </div>
+          <li><strong>Run the Tool:</strong></li>
+          <div class="code-block-with-copy">
+            <pre><code id="arch-run">sudo python wifi1.py</code></pre>
+            <button class="copy-btn" data-copytarget="arch-run">Copy</button>
+          </div>
+        </ol>
+        <div class="install-note glass-note">
+          <p><b>Note:</b> Arch support is experimental. Use <code>sudo</code> for WiFi operations. Adapter must support monitor mode.</p>
+        </div>
+      </div>
+      <div class="os-tab-content" id="mac">
+        <ol class="install-steps">
+          <li><strong>Check Prerequisites:</strong> Python 3, pip, Homebrew, and a compatible WiFi adapter.</li>
+          <li><strong>Install dependencies:</strong></li>
+          <div class="code-block-with-copy">
+            <pre><code id="mac-deps">brew install python3 aircrack-ng</code></pre>
+            <button class="copy-btn" data-copytarget="mac-deps">Copy</button>
+          </div>
+          <li><strong>Clone the Repository:</strong></li>
+          <div class="code-block-with-copy">
+            <pre><code id="mac-clone">git clone https://github.com/AryanVBW/WIFIjam.git</code></pre>
+            <button class="copy-btn" data-copytarget="mac-clone">Copy</button>
+          </div>
+          <li><strong>Navigate to the Project Directory:</strong></li>
+          <div class="code-block-with-copy">
+            <pre><code id="mac-cd">cd WIFIjam</code></pre>
+            <button class="copy-btn" data-copytarget="mac-cd">Copy</button>
+          </div>
+          <li><strong>Install Python requirements:</strong></li>
+          <div class="code-block-with-copy">
+            <pre><code id="mac-pip">pip3 install -r requirements.txt</code></pre>
+            <button class="copy-btn" data-copytarget="mac-pip">Copy</button>
+          </div>
+          <li><strong>Run the Tool:</strong></li>
+          <div class="code-block-with-copy">
+            <pre><code id="mac-run">python3 wifi1.py</code></pre>
+            <button class="copy-btn" data-copytarget="mac-run">Copy</button>
+          </div>
+        </ol>
+        <div class="install-note glass-note">
+          <p><b>Note:</b> Monitor mode and packet injection are limited on macOS due to driver restrictions. Most features may not work natively.</p>
+        </div>
+      </div>
+      <div class="os-tab-content" id="windows">
+        <ol class="install-steps">
+          <li><strong>Check Prerequisites:</strong> Python 3, pip, Chocolatey, and a compatible USB WiFi adapter.</li>
+          <li><strong>Install dependencies:</strong></li>
+          <div class="code-block-with-copy">
+            <pre><code id="win-deps">choco install python aircrack-ng</code></pre>
+            <button class="copy-btn" data-copytarget="win-deps">Copy</button>
+          </div>
+          <li><strong>Clone the Repository:</strong></li>
+          <div class="code-block-with-copy">
+            <pre><code id="win-clone">git clone https://github.com/AryanVBW/WIFIjam.git</code></pre>
+            <button class="copy-btn" data-copytarget="win-clone">Copy</button>
+          </div>
+          <li><strong>Navigate to the Project Directory:</strong></li>
+          <div class="code-block-with-copy">
+            <pre><code id="win-cd">cd WIFIjam</code></pre>
+            <button class="copy-btn" data-copytarget="win-cd">Copy</button>
+          </div>
+          <li><strong>Install Python requirements:</strong></li>
+          <div class="code-block-with-copy">
+            <pre><code id="win-pip">pip install -r requirements.txt</code></pre>
+            <button class="copy-btn" data-copytarget="win-pip">Copy</button>
+          </div>
+          <li><strong>Run the Tool (WSL2 recommended):</strong></li>
+          <div class="code-block-with-copy">
+            <pre><code id="win-run">wsl sudo python3 wifi1.py</code></pre>
+            <button class="copy-btn" data-copytarget="win-run">Copy</button>
+          </div>
+        </ol>
+        <div class="install-note glass-note">
+          <p><b>Note:</b> Native WiFi jamming is not supported on Windows. Use WSL2 with a compatible USB WiFi adapter for best results. Some features may not work due to driver limitations.</p>
+        </div>
+      </div>
+      <div class="install-note glass-note">
+        <p><b>Tip:</b> You can add OS icons to each tab for extra clarity. <br>Having trouble? Make sure your WiFi adapter supports monitor mode and you are running the script with appropriate privileges.</p>
+      </div>
+    </section>
+  </main>
+  <footer>
+    <p>v1.1.2 &copy; 2024 Vivek W (AryanVBW)</p>
+  </footer>
+  <script src="script.js"></script>
+</body>
+</html> 

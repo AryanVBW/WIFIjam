@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Usage | WIFIjam</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" href="../wifiB.png">
+</head>
+<body>
+  <div class="background-animation"></div>
+  <aside class="sidebar">
+    <img src="../wifiB.png" alt="Sidebar Logo" class="sidebar-logo-glow">
+    <nav class="sidebar-nav">
+      <a href="../index.html" title="Home"><span class="sidebar-icon-bg"><img src="side_bar/wifi-80.png" alt="Home" class="sidebar-icon"></span></a>
+      <a href="about.html" title="About"><span class="sidebar-icon-bg"><img src="side_bar/about-80.png" alt="About" class="sidebar-icon"></span></a>
+      <a href="installation.html" title="Installation"><span class="sidebar-icon-bg"><img src="side_bar/drop-down-80.png" alt="Installation" class="sidebar-icon"></span></a>
+      <a href="usage.html" class="active" title="Usage"><span class="sidebar-icon-bg"><img src="side_bar/time-50.png" alt="Usage" class="sidebar-icon"></span></a>
+      <a href="credits.html" title="Credits"><span class="sidebar-icon-bg"><img src="side_bar/inspiration-80.png" alt="Credits" class="sidebar-icon"></span></a>
+      <a href="disclaimer.html" title="Disclaimer"><span class="sidebar-icon-bg"><img src="side_bar/disclaimer-80.png" alt="Disclaimer" class="sidebar-icon"></span></a>
+     </nav>
+  </aside>
+  <main>
+    <header>
+      <img src="../shield.png" alt="WIFIjam Logo" class="logo">
+      <h1 class="main-title">Usage</h1>
+      <p class="main-subheadline">How to use WIFIjam safely and effectively</p>
+    </header>
+    <section>
+      <h2>Step-by-Step Guide</h2>
+      <ol class="install-steps">
+        <li>Connect your WiFi adapter that supports monitor mode and packet injection.</li>
+        <li>Open a terminal and navigate to the WIFIjam directory.</li>
+        <li>Run the tool with <code>sudo python3 wifi1.py</code> or <code>sudo python3 wifi2.py</code>.</li>
+        <li>Follow the on-screen prompts to select your WiFi interface and target network.</li>
+        <li>Choose the attack type (jamming or deauthentication) as prompted.</li>
+        <li>Monitor the output and press <kbd>Ctrl+C</kbd> to stop the attack at any time.</li>
+      </ol>
+      <div class="install-note">
+        <b>Warning:</b> Only use WIFIjam on networks you own or have explicit permission to test. Unauthorized use is illegal and unethical.
+      </div>
+      <h2>Common Use Cases</h2>
+      <ul>
+        <li>Testing the security of your own WiFi network.</li>
+        <li>Demonstrating wireless vulnerabilities in a classroom or lab.</li>
+        <li>Learning about deauthentication and jamming attacks for ethical hacking.</li>
+      </ul>
+      <h2>Troubleshooting</h2>
+      <ul>
+        <li>If no interfaces are detected, ensure your adapter is plugged in and supports monitor mode.</li>
+        <li>If you get permission errors, try running the script with <code>sudo</code>.</li>
+        <li>For best results, use on Linux (Ubuntu, Kali, etc.) with a compatible adapter.</li>
+      </ul>
+      <h2>Guide to All Python Scripts</h2>
+      <section>
+        <style>
+          body { background: #181c24 !important; color: #e0e6ed !important; }
+          .container, main, section { background: #232837 !important; color: #e0e6ed !important; }
+          h1, h2, h3, .main-title { color: #7ecfff !important; }
+          .install-note { background: #232837 !important; color: #ffe082 !important; border-left: 4px solid #ffe082; }
+          .script-box { background: #232837; border-left: 5px solid #4a90e2; margin: 18px 0; padding: 16px 18px; border-radius: 7px; box-shadow: 0 1px 6px #0003; color: #e0e6ed; }
+          .script-title { font-size: 1.1em; font-weight: bold; color: #7ecfff; margin-bottom: 2px; }
+          .script-summary { color: #4a90e2; font-weight: bold; margin-bottom: 6px; }
+          code, pre { background: #181c24 !important; color: #ffe082 !important; border-radius: 4px; padding: 2px 6px; }
+          a { color: #7ecfff; }
+          ul, ol { color: #e0e6ed; }
+        </style>
+        <h3>Universal Scripts (Work on Most Systems)</h3>
+        <div class="script-box">
+          <div class="script-title">wifi_deauth_universal.py</div>
+          <div class="script-summary">Finds WiFi networks and (on Linux) can disconnect devices.</div>
+          <b>What it does:</b> Finds WiFi networks and adapters on any system. On Linux, it can also disconnect (deauth) devices from WiFi if your adapter supports monitor mode.<br>
+          <b>How to run:</b> <code>python3 wifi_deauth_universal.py</code> (On Linux, use <code>sudo</code> for deauth features)<br>
+          <b>Why use it:</b> To see all WiFi networks around you, and (on Linux) test WiFi security by disconnecting devices.
+        </div>
+        <div class="script-box">
+          <div class="script-title">wifi_deauth_scapy.py</div>
+          <div class="script-summary">Disconnects devices from WiFi using Python only (Linux).</div>
+          <b>What it does:</b> Disconnects devices from WiFi using Python only (no extra tools needed).<br>
+          <b>How to run:</b> <code>sudo python3 wifi_deauth_scapy.py</code><br>
+          <b>Why use it:</b> To test WiFi security on Linux if you have a compatible adapter in monitor mode.
+        </div>
+        <h3>Linux/Arch Scripts</h3>
+        <div class="script-box">
+          <div class="script-title">wifiAIR.py</div>
+          <div class="script-summary">Scan, pick a target, and jam or disconnect devices.</div>
+          <b>What it does:</b> Lets you scan for WiFi networks, pick a target, and jam or disconnect devices.<br>
+          <b>How to run:</b> <code>sudo python3 wifiAIR.py</code><br>
+          <b>Why use it:</b> For advanced WiFi testing and learning about wireless security.
+        </div>
+        <div class="script-box">
+          <div class="script-title">wifi1.py, wifi2.py, wifi3.py</div>
+          <div class="script-summary">Different versions of WiFi jamming/disconnect scripts.</div>
+          <b>What they do:</b> Different versions of WiFi jamming/disconnect scripts. Each one works a bit differently.<br>
+          <b>How to run:</b> <code>sudo python3 wifi1.py</code> (or wifi2.py, wifi3.py)<br>
+          <b>Why use them:</b> To try different ways of disconnecting devices from WiFi.
+        </div>
+        <div class="script-box">
+          <div class="script-title">wifi. archbase. py</div>
+          <div class="script-summary">Special script for Arch Linux to jam or disconnect WiFi.</div>
+          <b>What it does:</b> Special script for Arch Linux to jam or disconnect WiFi.<br>
+          <b>How to run:</b> <code>sudo python3 'wifi. archbase. py'</code><br>
+          <b>Why use it:</b> If you use Arch Linux and want to test WiFi security.
+        </div>
+        <h3>Windows Scripts</h3>
+        <div class="script-box">
+          <div class="script-title">windows10-WIFI-Email.py</div>
+          <div class="script-summary">Shows saved WiFi networks and passwords on Windows.</div>
+          <b>What it does:</b> Shows saved WiFi networks and passwords on your Windows computer. Can also email them to you.<br>
+          <b>How to run:</b> <code>python windows10-WIFI-Email.py</code><br>
+          <b>Why use it:</b> To recover or check WiFi passwords you have used before.
+        </div>
+        <h3>Scripts in <code>red-python-scripts/</code> (Extra Tools)</h3>
+        <div class="script-box">
+          <div class="script-title">wifi_dos_own.py</div>
+          <div class="script-summary">Advanced tool to disconnect devices from WiFi (Linux only).</div>
+          <b>What it does:</b> Advanced tool to disconnect devices from WiFi (Linux only).<br>
+          <b>How to run:</b> <code>sudo python3 red-python-scripts/wifi_dos_own.py</code><br>
+          <b>Why use it:</b> For deep WiFi security testing.
+        </div>
+        <div class="script-box">
+          <div class="script-title">wifi_dos_type1.py, wifi_dos_type2.py, wifi_dos3.py</div>
+          <div class="script-summary">More ways to disconnect devices from WiFi (Linux only).</div>
+          <b>What they do:</b> More ways to disconnect devices from WiFi (Linux only).<br>
+          <b>How to run:</b> <code>sudo python3 red-python-scripts/wifi_dos_type1.py</code> (or type2, dos3)<br>
+          <b>Why use them:</b> To try different methods for WiFi testing.
+        </div>
+        <div class="script-box">
+          <div class="script-title">windows10-wifi.py, windows10-wifi-rest.py, windows10-wifi-email.py</div>
+          <div class="script-summary">Show saved WiFi networks and passwords on Windows.</div>
+          <b>What they do:</b> Show saved WiFi networks and passwords on Windows.<br>
+          <b>How to run:</b> <code>python red-python-scripts/windows10-wifi.py</code> (or rest, email)<br>
+          <b>Why use them:</b> To see or recover WiFi passwords you have used before.
+        </div>
+        <div class="script-box">
+          <div class="script-title">change-windows10-mac-address.py</div>
+          <div class="script-summary">Change your WiFi adapter's MAC address on Windows.</div>
+          <b>What it does:</b> Changes your WiFi adapter's MAC address on Windows.<br>
+          <b>How to run:</b> <code>python red-python-scripts/change-windows10-mac-address.py</code><br>
+          <b>Why use it:</b> To change your device's identity on a network (for privacy or testing).
+        </div>
+        <div class="script-box">
+          <div class="script-title">arp_mitm.py</div>
+          <div class="script-summary">Intercept network traffic between devices (Linux only).</div>
+          <b>What it does:</b> Lets you intercept network traffic between devices (Linux only).<br>
+          <b>How to run:</b> <code>sudo python3 red-python-scripts/arp_mitm.py</code><br>
+          <b>Why use it:</b> For learning about network security and attacks.
+        </div>
+        <div class="script-box">
+          <div class="script-title">nmap_port_scanner.py, nmap_port_scanner_ip_obj.py</div>
+          <div class="script-summary">Scan computers for open ports (Linux, needs nmap).</div>
+          <b>What they do:</b> Scan computers for open ports (Linux, needs nmap).<br>
+          <b>How to run:</b> <code>python3 red-python-scripts/nmap_port_scanner.py</code><br>
+          <b>Why use them:</b> To check what services are running on a computer or server.
+        </div>
+        <div class="script-box">
+          <div class="script-title">yeelight1.py, yeelight2.py, yeelight_discover.py</div>
+          <div class="script-summary">Find and control Yeelight smart bulbs on your network.</div>
+          <b>What they do:</b> Find and control Yeelight smart bulbs on your network.<br>
+          <b>How to run:</b> <code>python3 red-python-scripts/yeelight1.py</code><br>
+          <b>Why use them:</b> To play with smart lights using Python.
+        </div>
+        <div class="script-box">
+          <div class="script-title">lanscan_arp.py</div>
+          <div class="script-summary">Finds all devices on your local network (LAN).</div>
+          <b>What it does:</b> Finds all devices on your local network (LAN).<br>
+          <b>How to run:</b> <code>python3 red-python-scripts/lanscan_arp.py</code><br>
+          <b>Why use it:</b> To see who is connected to your network.
+        </div>
+        <div class="script-box">
+          <div class="script-title">port_scanner_ip_obj.py, port_scanner_regex.py</div>
+          <div class="script-summary">Scan IP addresses for open ports.</div>
+          <b>What they do:</b> Scan IP addresses for open ports.<br>
+          <b>How to run:</b> <code>python3 red-python-scripts/port_scanner_ip_obj.py</code><br>
+          <b>Why use them:</b> To check what services/devices are available on your network.
+        </div>
+        <div class="script-box">
+          <div class="script-title">python webcam.py</div>
+          <div class="script-summary">Uses your webcam to take pictures or video.</div>
+          <b>What it does:</b> Uses your webcam to take pictures or video.<br>
+          <b>How to run:</b> <code>python3 'red-python-scripts/python webcam.py'</code><br>
+          <b>Why use it:</b> For webcam testing or fun projects.
+        </div>
+        <div class="install-note">
+          <b>Note:</b> Some scripts need root/administrator rights or extra programs. Always read the comments at the top of each script for details and safety tips.
+        </div>
+      </section>
+    </section>
+  </main>
+  <footer>
+    <p>v1.1.2 &copy; 2024 Vivek W (AryanVBW)</p>
+  </footer>
+  <script src="script.js"></script>
+</body>
+</html> 
