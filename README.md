@@ -1,4 +1,8 @@
 # WIFIjam Universal WiFi Deauthenticator & Info Tool
+<p align="center">
+<img src="https://raw.githubusercontent.com/AryanVBW/WIFIjam/main/Logo/OIG__17_-removebg-preview.png" height="250"><br>
+A WIFi Jamer  <img src="https://raw.githubusercontent.com/AryanVBW/WIFIjam/main/wifiB.png" height="20">, powered by Python <img src="https://raw.githubusercontent.com/AryanVBW/WIFIjam/main/python.png" height="12">
+</p>
 
 ## Features
 - Cross-platform: Works on Linux, macOS, and Windows
@@ -63,10 +67,7 @@
 - Inspired by the open-source community and [Scapy](https://scapy.net/).
 - Thanks to all contributors and testers.
 
-<p align="center">
-<img src="https://raw.githubusercontent.com/AryanVBW/WIFIjam/main/Logo/OIG__17_-removebg-preview.png" height="250"><br>
-A WIFi Jamer  <img src="https://raw.githubusercontent.com/AryanVBW/WIFIjam/main/wifiB.png" height="20">, powered by Python <img src="https://raw.githubusercontent.com/AryanVBW/WIFIjam/main/python.png" height="12">
-</p>
+
 
 ## <img src="https://raw.githubusercontent.com/AryanVBW/WIFIjam/main/wifiB.png" height="40">Features
 - JAM 2.4Hz wifi or Mobile hostpost
