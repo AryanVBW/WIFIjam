@@ -1,0 +1,216 @@
+name: Documentation
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - '**.md'
+      - 'docs/**'
+      - '.github/workflows/docs.yml'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - '**.md'
+      - 'docs/**'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+jobs:
+  check-links:
+    name: Check Documentation Links
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Check links in markdown files
+      uses: gaurav-nelson/github-action-markdown-link-check@v1
+      with:
+        use-quiet-mode: 'yes'
+        use-verbose-mode: 'yes'
+        config-file: '.github/markdown-link-check-config.json'
+        folder-path: '.'
+        file-path: './README_NEW.md, ./INSTALLATION.md, ./CONTRIBUTING.md'
+      continue-on-error: true
+
+  validate-markdown:
+    name: Validate Markdown
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+    
+    - name: Install markdownlint-cli
+      run: npm install -g markdownlint-cli
+    
+    - name: Lint markdown files
+      run: |
+        markdownlint '**/*.md' --ignore node_modules --ignore .github || true
+      continue-on-error: true
+
+  spell-check:
+    name: Spell Check
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+    
+    - name: Install cspell
+      run: npm install -g cspell
+    
+    - name: Run spell check
+      run: |
+        cspell "**/*.md" "**/*.py" --no-progress || true
+      continue-on-error: true
+
+  build-docs:
+    name: Build Documentation
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install sphinx sphinx-rtd-theme sphinx-autodoc-typehints
+        pip install -r requirements.txt
+    
+    - name: Generate API documentation
+      run: |
+        mkdir -p docs/api
+        python -m sphinx.ext.apidoc -o docs/api wifijam
+      continue-on-error: true
+    
+    - name: Build documentation
+      run: |
+        # Create a simple index if sphinx conf doesn't exist
+        if [ ! -f docs/conf.py ]; then
+          echo "Documentation build skipped - no Sphinx configuration"
+        fi
+      continue-on-error: true
+
+  check-readme:
+    name: Check README Quality
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Check README exists
+      run: |
+        if [ ! -f README_NEW.md ]; then
+          echo "❌ README_NEW.md not found!"
+          exit 1
+        fi
+        echo "✅ README_NEW.md exists"
+    
+    - name: Check README length
+      run: |
+        LINES=$(wc -l < README_NEW.md)
+        echo "README has $LINES lines"
+        if [ $LINES -lt 50 ]; then
+          echo "⚠️ README seems too short (less than 50 lines)"
+        else
+          echo "✅ README has adequate length"
+        fi
+    
+    - name: Check for required sections
+      run: |
+        echo "Checking for required sections..."
+        
+        check_section() {
+          if grep -q "$1" README_NEW.md; then
+            echo "✅ Found: $1"
+          else
+            echo "❌ Missing: $1"
+            return 1
+          fi
+        }
+        
+        check_section "Installation" || true
+        check_section "Usage" || true
+        check_section "Features" || true
+        check_section "Requirements" || true
+        check_section "License" || true
+    
+    - name: Check for badges
+      run: |
+        if grep -q "!\[.*\](https://img.shields.io" README_NEW.md; then
+          echo "✅ README contains badges"
+        else
+          echo "⚠️ Consider adding status badges to README"
+        fi
+
+  update-badges:
+    name: Update Status Badges
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: [check-links, validate-markdown, check-readme]
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+    
+    - name: Generate badge URLs
+      run: |
+        echo "# Status Badges" > badges.md
+        echo "" >> badges.md
+        echo "[![Tests](https://github.com/${{ github.repository }}/actions/workflows/test.yml/badge.svg)](https://github.com/${{ github.repository }}/actions/workflows/test.yml)" >> badges.md
+        echo "[![Quality](https://github.com/${{ github.repository }}/actions/workflows/quality.yml/badge.svg)](https://github.com/${{ github.repository }}/actions/workflows/quality.yml)" >> badges.md
+        echo "[![Documentation](https://github.com/${{ github.repository }}/actions/workflows/docs.yml/badge.svg)](https://github.com/${{ github.repository }}/actions/workflows/docs.yml)" >> badges.md
+        echo "[![PyPI version](https://badge.fury.io/py/wifijam.svg)](https://badge.fury.io/py/wifijam)" >> badges.md
+        echo "[![Python versions](https://img.shields.io/pypi/pyversions/wifijam.svg)](https://pypi.org/project/wifijam/)" >> badges.md
+        echo "[![License](https://img.shields.io/github/license/${{ github.repository }}.svg)](https://github.com/${{ github.repository }}/blob/main/LICENSE)" >> badges.md
+        
+        cat badges.md
+
+  summary:
+    name: Documentation Summary
+    needs: [check-links, validate-markdown, spell-check, check-readme]
+    if: always()
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Generate summary
+      run: |
+        echo "# Documentation Quality Summary" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "| Check | Status |" >> $GITHUB_STEP_SUMMARY
+        echo "|-------|--------|" >> $GITHUB_STEP_SUMMARY
+        echo "| Link Check | ${{ needs.check-links.result == 'success' && '✅ Passed' || '⚠️ Warning' }} |" >> $GITHUB_STEP_SUMMARY
+        echo "| Markdown Validation | ${{ needs.validate-markdown.result == 'success' && '✅ Passed' || '⚠️ Warning' }} |" >> $GITHUB_STEP_SUMMARY
+        echo "| Spell Check | ${{ needs.spell-check.result == 'success' && '✅ Passed' || '⚠️ Warning' }} |" >> $GITHUB_STEP_SUMMARY
+        echo "| README Quality | ${{ needs.check-readme.result == 'success' && '✅ Passed' || '❌ Failed' }} |" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "## Next Steps" >> $GITHUB_STEP_SUMMARY
+        echo "- Review any warnings or failures above" >> $GITHUB_STEP_SUMMARY
+        echo "- Fix broken links if any" >> $GITHUB_STEP_SUMMARY
+        echo "- Update documentation as needed" >> $GITHUB_STEP_SUMMARY
+

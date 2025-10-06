@@ -1,0 +1,232 @@
+name: Publish to PyPI
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+  workflow_dispatch:
+    inputs:
+      test_pypi:
+        description: 'Publish to Test PyPI instead of PyPI'
+        required: false
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+  id-token: write  # Required for OIDC authentication to PyPI
+
+jobs:
+  test:
+    name: Run Tests Before Publishing
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+        cache: 'pip'
+    
+    - name: Install system dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y aircrack-ng iw wireless-tools
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install pytest pytest-cov
+    
+    - name: Run tests
+      run: |
+        pytest tests/ -v --cov=wifijam
+    
+    - name: Verify package imports
+      run: |
+        python -c "import wifijam; print(f'Version: {wifijam.__version__}')"
+
+  build:
+    name: Build Distribution
+    needs: test
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+    
+    - name: Install build dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install build twine
+    
+    - name: Build package
+      run: |
+        python -m build
+    
+    - name: Check package
+      run: |
+        twine check dist/*
+    
+    - name: List built packages
+      run: |
+        ls -lh dist/
+    
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: dist-packages
+        path: dist/
+        retention-days: 30
+
+  publish-testpypi:
+    name: Publish to Test PyPI
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.event.inputs.test_pypi == 'true' || contains(github.ref, 'rc') || contains(github.ref, 'beta') || contains(github.ref, 'alpha')
+    environment:
+      name: testpypi
+      url: https://test.pypi.org/p/wifijam
+    
+    steps:
+    - name: Download build artifacts
+      uses: actions/download-artifact@v4
+      with:
+        name: dist-packages
+        path: dist/
+    
+    - name: Publish to Test PyPI
+      uses: pypa/gh-action-pypi-publish@release/v1
+      with:
+        repository-url: https://test.pypi.org/legacy/
+        skip-existing: true
+        verbose: true
+
+  publish-pypi:
+    name: Publish to PyPI
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v') && !contains(github.ref, 'rc') && !contains(github.ref, 'beta') && !contains(github.ref, 'alpha')
+    environment:
+      name: pypi
+      url: https://pypi.org/p/wifijam
+    
+    steps:
+    - name: Download build artifacts
+      uses: actions/download-artifact@v4
+      with:
+        name: dist-packages
+        path: dist/
+    
+    - name: Publish to PyPI
+      uses: pypa/gh-action-pypi-publish@release/v1
+      with:
+        verbose: true
+        print-hash: true
+
+  create-release:
+    name: Create GitHub Release
+    needs: [publish-pypi, publish-testpypi]
+    if: always() && (needs.publish-pypi.result == 'success' || needs.publish-testpypi.result == 'success')
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+    
+    - name: Download build artifacts
+      uses: actions/download-artifact@v4
+      with:
+        name: dist-packages
+        path: dist/
+    
+    - name: Extract version from tag
+      id: get_version
+      run: |
+        echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+    
+    - name: Generate changelog
+      id: changelog
+      run: |
+        # Get the previous tag
+        PREV_TAG=$(git describe --abbrev=0 --tags $(git rev-list --tags --skip=1 --max-count=1) 2>/dev/null || echo "")
+        
+        if [ -z "$PREV_TAG" ]; then
+          echo "CHANGELOG=Initial release" >> $GITHUB_OUTPUT
+        else
+          # Generate changelog from commits
+          CHANGELOG=$(git log ${PREV_TAG}..HEAD --pretty=format:"- %s (%h)" --no-merges)
+          echo "CHANGELOG<<EOF" >> $GITHUB_OUTPUT
+          echo "$CHANGELOG" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+        fi
+    
+    - name: Read CHANGELOG.md
+      id: read_changelog
+      run: |
+        if [ -f CHANGELOG.md ]; then
+          # Extract the latest version section from CHANGELOG.md
+          RELEASE_NOTES=$(awk '/^## \[/{if(++count==2)exit;if(count==1)next}count==1' CHANGELOG.md)
+          echo "RELEASE_NOTES<<EOF" >> $GITHUB_OUTPUT
+          echo "$RELEASE_NOTES" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+        else
+          echo "RELEASE_NOTES=See commits for changes" >> $GITHUB_OUTPUT
+        fi
+    
+    - name: Create GitHub Release
+      uses: softprops/action-gh-release@v1
+      with:
+        name: WIFIjam v${{ steps.get_version.outputs.VERSION }}
+        body: |
+          # WIFIjam v${{ steps.get_version.outputs.VERSION }}
+          
+          ## Release Notes
+          ${{ steps.read_changelog.outputs.RELEASE_NOTES }}
+          
+          ## Changes
+          ${{ steps.changelog.outputs.CHANGELOG }}
+          
+          ## Installation
+          ```bash
+          pip install wifijam==${{ steps.get_version.outputs.VERSION }}
+          ```
+          
+          ## Links
+          - [PyPI Package](https://pypi.org/project/wifijam/${{ steps.get_version.outputs.VERSION }}/)
+          - [Documentation](https://github.com/AryanVBW/WIFIjam#readme)
+          - [Changelog](https://github.com/AryanVBW/WIFIjam/blob/main/CHANGELOG.md)
+          
+          ## ⚠️ Legal Notice
+          This tool is for educational and authorized testing ONLY. Always comply with local laws.
+        files: |
+          dist/*
+        draft: false
+        prerelease: ${{ contains(github.ref, 'rc') || contains(github.ref, 'beta') || contains(github.ref, 'alpha') }}
+        generate_release_notes: true
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    
+    - name: Notify on success
+      if: success()
+      run: |
+        echo "✅ Successfully published WIFIjam v${{ steps.get_version.outputs.VERSION }} to PyPI!"
+        echo "📦 Package: https://pypi.org/project/wifijam/${{ steps.get_version.outputs.VERSION }}/"
+    
+    - name: Notify on failure
+      if: failure()
+      run: |
+        echo "❌ Failed to publish WIFIjam v${{ steps.get_version.outputs.VERSION }}"
+        exit 1
+

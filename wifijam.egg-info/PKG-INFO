@@ -1,3 +1,52 @@
+Metadata-Version: 2.4
+Name: wifijam
+Version: 2.0.0
+Summary: Professional WiFi Security Testing Tool with GUI
+Home-page: https://github.com/AryanVBW/WIFIjam
+Author: Vivek W (AryanVBW)
+Author-email: "Vivek W (AryanVBW)" <admin@aryanvbw.live>
+License: MIT
+Project-URL: Homepage, https://github.com/AryanVBW/WIFIjam
+Project-URL: Documentation, https://github.com/AryanVBW/WIFIjam#readme
+Project-URL: Repository, https://github.com/AryanVBW/WIFIjam
+Project-URL: Issues, https://github.com/AryanVBW/WIFIjam/issues
+Keywords: wifi,security,testing,penetration-testing,deauth,jamming,network-security
+Platform: Linux
+Platform: macOS
+Platform: Windows
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Information Technology
+Classifier: Intended Audience :: System Administrators
+Classifier: Topic :: Security
+Classifier: Topic :: System :: Networking
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Operating System :: POSIX :: Linux
+Classifier: Operating System :: MacOS
+Classifier: Operating System :: Microsoft :: Windows
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+Requires-Dist: aiohttp>=3.9.0
+Requires-Dist: aiohttp-cors>=0.7.0
+Requires-Dist: scapy>=2.5.0
+Requires-Dist: psutil>=5.9.0
+Requires-Dist: netifaces>=0.11.0
+Provides-Extra: dev
+Requires-Dist: pytest>=7.0.0; extra == "dev"
+Requires-Dist: pytest-asyncio>=0.21.0; extra == "dev"
+Requires-Dist: black>=23.0.0; extra == "dev"
+Requires-Dist: flake8>=6.0.0; extra == "dev"
+Requires-Dist: mypy>=1.0.0; extra == "dev"
+Dynamic: author
+Dynamic: home-page
+Dynamic: platform
+Dynamic: requires-python
+
 # WIFIjam v2.0 - Professional WiFi Security Testing Tool
 
 <p align="center">

@@ -24,6 +24,10 @@ class AttackType(Enum):
     JAM_24GHZ = "jam24"
     JAM_5GHZ = "jam5"
     BEACON_FLOOD = "beacon_flood"
+    EVIL_TWIN = "evil_twin"
+    HANDSHAKE_CAPTURE = "handshake_capture"
+    AUTH_FLOOD = "auth_flood"
+    DISASSOC = "disassoc"
 
 
 @dataclass

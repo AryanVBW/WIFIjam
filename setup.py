@@ -24,7 +24,7 @@ setup(
     name="wifijam",
     version="2.0.0",
     author="Vivek W (AryanVBW)",
-    author_email="admin@aryanvbw.live",
+    author_email="vivek.aryanvbw@gmail.com",
     description="Professional WiFi Security Testing Tool with GUI",
     long_description=long_description,
     long_description_content_type="text/markdown",

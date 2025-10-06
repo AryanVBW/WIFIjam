@@ -1,4 +1,14 @@
-# WIFIjam Universal WiFi Deauthenticator & Info Tool
+# WIFIjam v2.0 - MIGRATED
+
+> **⚠️ IMPORTANT: This project has been completely rewritten in v2.0**
+>
+> The old Python scripts (wifi1.py, wifi2.py, etc.) have been replaced with a professional, production-ready application.
+>
+> **Please see [README_NEW.md](README_NEW.md) for the current documentation.**
+
+---
+
+# WIFIjam (Legacy v1.x) Universal WiFi Deauthenticator & Info Tool
 <p align="center">
 <img src="https://raw.githubusercontent.com/AryanVBW/WIFIjam/main/Logo/OIG__17_-removebg-preview.png" height="250"><br>
 A WIFi Jamer  <img src="https://raw.githubusercontent.com/AryanVBW/WIFIjam/main/wifiB.png" height="20">, powered by Python <img src="https://raw.githubusercontent.com/AryanVBW/WIFIjam/main/python.png" height="12">

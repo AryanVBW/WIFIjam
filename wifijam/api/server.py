@@ -17,6 +17,8 @@ from wifijam.wifi.adapter import AdapterManager
 from wifijam.wifi.scanner import NetworkScanner
 from wifijam.wifi.monitor import MonitorMode
 from wifijam.wifi.attack import AttackManager, AttackConfig, AttackType
+from wifijam.wifi.capture import PacketCapture
+from wifijam.wifi.device import DeviceTracker
 from wifijam.api.websocket import WebSocketManager
 
 logger = get_logger(__name__)

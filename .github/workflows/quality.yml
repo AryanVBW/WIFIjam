@@ -1,0 +1,256 @@
+name: Code Quality
+
+on:
+  pull_request:
+    branches: [ main, develop ]
+  push:
+    branches: [ main, develop ]
+  workflow_dispatch:
+
+jobs:
+  formatting:
+    name: Check Code Formatting
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+        cache: 'pip'
+    
+    - name: Install Black
+      run: |
+        python -m pip install --upgrade pip
+        pip install black
+    
+    - name: Check formatting with Black
+      run: |
+        black --check --diff --color wifijam/ tests/
+    
+    - name: Comment on PR (if formatting issues)
+      if: failure() && github.event_name == 'pull_request'
+      uses: actions/github-script@v7
+      with:
+        script: |
+          github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: '❌ **Code formatting check failed!**\n\nPlease run `black wifijam/ tests/` to format your code.'
+          })
+
+  linting:
+    name: Lint Code
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+        cache: 'pip'
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install flake8 flake8-docstrings flake8-bugbear
+        pip install -r requirements.txt
+    
+    - name: Lint with flake8
+      run: |
+        # Stop the build if there are Python syntax errors or undefined names
+        flake8 wifijam/ --count --select=E9,F63,F7,F82 --show-source --statistics
+        
+        # Check for common issues
+        flake8 wifijam/ --count --max-complexity=15 --max-line-length=100 \
+          --ignore=E203,W503,D100,D101,D102,D103,D104,D105,D107 \
+          --statistics
+    
+    - name: Generate flake8 report
+      if: always()
+      run: |
+        flake8 wifijam/ --format=html --htmldir=flake8-report \
+          --max-complexity=15 --max-line-length=100 \
+          --ignore=E203,W503,D100,D101,D102,D103,D104,D105,D107
+      continue-on-error: true
+    
+    - name: Upload flake8 report
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: flake8-report
+        path: flake8-report/
+
+  type-checking:
+    name: Type Checking
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+        cache: 'pip'
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install mypy types-requests
+        pip install -r requirements.txt
+    
+    - name: Type check with mypy
+      run: |
+        mypy wifijam/ --ignore-missing-imports --no-strict-optional \
+          --warn-redundant-casts --warn-unused-ignores \
+          --warn-return-any --warn-unreachable
+      continue-on-error: true
+
+  security:
+    name: Security Scan
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+    
+    - name: Install security tools
+      run: |
+        python -m pip install --upgrade pip
+        pip install bandit safety pip-audit
+    
+    - name: Run Bandit security scan
+      run: |
+        bandit -r wifijam/ -f json -o bandit-report.json || true
+        bandit -r wifijam/ -f txt
+      continue-on-error: true
+    
+    - name: Check dependencies for known vulnerabilities
+      run: |
+        safety check --json || true
+        safety check
+      continue-on-error: true
+    
+    - name: Audit dependencies with pip-audit
+      run: |
+        pip-audit --desc
+      continue-on-error: true
+    
+    - name: Upload security reports
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: security-reports
+        path: |
+          bandit-report.json
+
+  complexity:
+    name: Code Complexity Analysis
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+    
+    - name: Install radon
+      run: |
+        python -m pip install --upgrade pip
+        pip install radon
+    
+    - name: Calculate cyclomatic complexity
+      run: |
+        echo "## Cyclomatic Complexity" >> complexity-report.md
+        radon cc wifijam/ -a -s >> complexity-report.md
+    
+    - name: Calculate maintainability index
+      run: |
+        echo "## Maintainability Index" >> complexity-report.md
+        radon mi wifijam/ -s >> complexity-report.md
+    
+    - name: Calculate raw metrics
+      run: |
+        echo "## Raw Metrics" >> complexity-report.md
+        radon raw wifijam/ -s >> complexity-report.md
+    
+    - name: Display complexity report
+      run: |
+        cat complexity-report.md
+    
+    - name: Upload complexity report
+      uses: actions/upload-artifact@v4
+      with:
+        name: complexity-report
+        path: complexity-report.md
+
+  dependencies:
+    name: Check Dependencies
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install pipdeptree pip-check-updates
+        pip install -r requirements.txt
+    
+    - name: Check dependency tree
+      run: |
+        pipdeptree
+    
+    - name: Check for outdated packages
+      run: |
+        pip list --outdated
+      continue-on-error: true
+
+  summary:
+    name: Quality Summary
+    needs: [formatting, linting, type-checking, security, complexity]
+    if: always()
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Generate summary
+      run: |
+        echo "# Code Quality Summary" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "| Check | Status |" >> $GITHUB_STEP_SUMMARY
+        echo "|-------|--------|" >> $GITHUB_STEP_SUMMARY
+        echo "| Formatting | ${{ needs.formatting.result == 'success' && '✅ Passed' || '❌ Failed' }} |" >> $GITHUB_STEP_SUMMARY
+        echo "| Linting | ${{ needs.linting.result == 'success' && '✅ Passed' || '❌ Failed' }} |" >> $GITHUB_STEP_SUMMARY
+        echo "| Type Checking | ${{ needs.type-checking.result == 'success' && '✅ Passed' || '⚠️ Warning' }} |" >> $GITHUB_STEP_SUMMARY
+        echo "| Security | ${{ needs.security.result == 'success' && '✅ Passed' || '⚠️ Warning' }} |" >> $GITHUB_STEP_SUMMARY
+        echo "| Complexity | ${{ needs.complexity.result == 'success' && '✅ Passed' || '⚠️ Warning' }} |" >> $GITHUB_STEP_SUMMARY
+    
+    - name: Check if all passed
+      if: needs.formatting.result != 'success' || needs.linting.result != 'success'
+      run: |
+        echo "❌ Some quality checks failed!"
+        exit 1
+
