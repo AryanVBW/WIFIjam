@@ -16,6 +16,14 @@ permissions:
   contents: write
   id-token: write  # Required for OIDC authentication to PyPI
 
+# Optional environment-wide variables (configured per GitHub Environment UI)
+# vars context is used so absence does not break workflow.
+env:
+  PUBLISH_CHANNEL: ${{ vars.PUBLISH_CHANNEL }}
+  USE_TOKEN: ${{ vars.USE_TOKEN }}              # If set to '1' and token secret exists, use API token instead of OIDC
+  FORCE_TRUSTED_PUBLISHING: ${{ vars.FORCE_TRUSTED_PUBLISHING }}  # If '1', force OIDC even if USE_TOKEN=1
+  ALLOW_VERSION_MISMATCH: ${{ vars.ALLOW_VERSION_MISMATCH }}      # If '1', skip failing when tag != project version
+
 jobs:
   test:
     name: Run Tests Before Publishing
@@ -64,6 +72,27 @@ jobs:
       with:
         python-version: '3.11'
     
+    - name: Validate tag matches project version
+      if: startsWith(github.ref, 'refs/tags/v')
+      run: |
+        TAG_VERSION="${GITHUB_REF#refs/tags/v}"
+        FILE_VERSION=$(python - <<'EOF'
+import tomllib, pathlib
+data = tomllib.loads(pathlib.Path('pyproject.toml').read_text())
+print(data['project']['version'])
+EOF
+)
+        echo "Tag version: $TAG_VERSION"
+        echo "Project version: $FILE_VERSION"
+        if [ "$TAG_VERSION" != "$FILE_VERSION" ]; then
+          if [ "${ALLOW_VERSION_MISMATCH}" = "1" ]; then
+            echo "::warning title=Version mismatch allowed::Tag $TAG_VERSION != project $FILE_VERSION"
+          else
+            echo "::error title=Version mismatch::Tag $TAG_VERSION != project $FILE_VERSION (set environment variable ALLOW_VERSION_MISMATCH=1 to bypass)" >&2
+            exit 1
+          fi
+        fi
+
     - name: Install build dependencies
       run: |
         python -m pip install --upgrade pip
@@ -104,10 +133,38 @@ jobs:
         name: dist-packages
         path: dist/
     
-    - name: Publish to Test PyPI
+    - name: Decide publishing method (Test PyPI)
+      id: choose-method
+      shell: bash
+      run: |
+        method="oidc"
+        if [ "${FORCE_TRUSTED_PUBLISHING}" = "1" ]; then
+          echo "Forcing OIDC as per FORCE_TRUSTED_PUBLISHING variable";
+        elif [ "${USE_TOKEN}" = "1" ]; then
+          # Only switch if secret exists
+          if [ -n "${{ secrets.TEST_PYPI_API_TOKEN }}" ]; then
+            method="token"
+          else
+            echo "::warning title=Token fallback requested but secret missing::TEST_PYPI_API_TOKEN not set; using OIDC";
+          fi
+        fi
+        echo "method=$method" >> "$GITHUB_OUTPUT"
+        echo "Chosen method: $method"
+
+    - name: Publish to Test PyPI via OIDC
+      if: steps.choose-method.outputs.method == 'oidc'
       uses: pypa/gh-action-pypi-publish@release/v1
       with:
         repository-url: https://test.pypi.org/legacy/
+        skip-existing: true
+        verbose: true
+
+    - name: Publish to Test PyPI via API token
+      if: steps.choose-method.outputs.method == 'token'
+      uses: pypa/gh-action-pypi-publish@release/v1
+      with:
+        repository-url: https://test.pypi.org/legacy/
+        password: ${{ secrets.TEST_PYPI_API_TOKEN }}
         skip-existing: true
         verbose: true
 
@@ -127,9 +184,35 @@ jobs:
         name: dist-packages
         path: dist/
     
-    - name: Publish to PyPI
+    - name: Decide publishing method (PyPI)
+      id: choose-method
+      shell: bash
+      run: |
+        method="oidc"
+        if [ "${FORCE_TRUSTED_PUBLISHING}" = "1" ]; then
+          echo "Forcing OIDC as per FORCE_TRUSTED_PUBLISHING variable";
+        elif [ "${USE_TOKEN}" = "1" ]; then
+          if [ -n "${{ secrets.PYPI_API_TOKEN }}" ]; then
+            method="token"
+          else
+            echo "::warning title=Token fallback requested but secret missing::PYPI_API_TOKEN not set; using OIDC";
+          fi
+        fi
+        echo "method=$method" >> "$GITHUB_OUTPUT"
+        echo "Chosen method: $method"
+
+    - name: Publish to PyPI via OIDC
+      if: steps.choose-method.outputs.method == 'oidc'
       uses: pypa/gh-action-pypi-publish@release/v1
       with:
+        verbose: true
+        print-hash: true
+
+    - name: Publish to PyPI via API token
+      if: steps.choose-method.outputs.method == 'token'
+      uses: pypa/gh-action-pypi-publish@release/v1
+      with:
+        password: ${{ secrets.PYPI_API_TOKEN }}
         verbose: true
         print-hash: true
 

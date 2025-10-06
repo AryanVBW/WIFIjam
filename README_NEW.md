@@ -24,8 +24,10 @@ A Professional WiFi Security Testing Tool with Modern GUI
 - **🖥️ Cross-Platform** - Works on Linux, macOS, and Windows
 - **⚡ Real-Time Monitoring** - Live network discovery and attack progress
 - **🛠️ Professional Architecture** - Clean, modular, production-ready code
-- **📊 Advanced Features** - Monitor mode management, multi-adapter support
+- **📊 Advanced Features** - Packet capture, device tracking, advanced attacks
 - **🔒 Security Focused** - Proper error handling and permission management
+- **🤖 Automated CI/CD** - GitHub Actions workflows with OIDC PyPI publishing
+- **📈 Auto Versioning** - Automatic semantic versioning on every push
 
 ## ✨ Features
 
@@ -36,6 +38,15 @@ A Professional WiFi Security Testing Tool with Modern GUI
 - **2.4GHz & 5GHz Jamming** - Disrupt WiFi communications on both bands
 - **Multi-Adapter Support** - Detect and manage multiple WiFi adapters
 - **Real-Time Updates** - WebSocket-based live data streaming
+
+### Advanced Features (NEW in v2.0)
+- **Packet Capture & Analysis** - Full packet capture with Scapy integration
+- **WPA Handshake Capture** - Capture and export WPA/WPA2 handshakes
+- **Device Tracking** - Track and fingerprint connected devices
+- **MAC Vendor Lookup** - Identify device manufacturers
+- **Device Type Detection** - Classify devices (smartphone, laptop, IoT, etc.)
+- **Signal History** - Track signal strength over time
+- **Advanced Attack Types** - Evil Twin, Auth Flood, Beacon Flood, Disassociation
 
 ### User Interface
 - **Web Dashboard** - Modern, intuitive web interface
@@ -336,15 +347,35 @@ sudo apt-get install -y aircrack-ng iw wireless-tools
 which airmon-ng airodump-ng aireplay-ng
 ```
 
+## 📚 Documentation
+
+### Complete Guides
+- **[INSTALLATION.md](INSTALLATION.md)** - Detailed installation instructions
+- **[PYPI_PUBLISHING_COMPLETE_GUIDE.md](PYPI_PUBLISHING_COMPLETE_GUIDE.md)** - Complete PyPI setup guide
+- **[PYPI_TRUSTED_PUBLISHER_FIX.md](PYPI_TRUSTED_PUBLISHER_FIX.md)** - Fix authentication issues
+- **[AUTOMATIC_VERSIONING_GUIDE.md](AUTOMATIC_VERSIONING_GUIDE.md)** - Automatic versioning system
+- **[ENHANCEMENT_SUMMARY.md](ENHANCEMENT_SUMMARY.md)** - v2.0 enhancement summary
+- **[PHASE1_FEATURES.md](PHASE1_FEATURES.md)** - Advanced features documentation
+- **[CONTRIBUTING.md](CONTRIBUTING.md)** - Contribution guidelines
+- **[DEPLOYMENT.md](DEPLOYMENT.md)** - Deployment instructions
+
+### Quick Setup
+```bash
+# Run automated setup script
+./scripts/setup-pypi-publishing.sh
+```
+
 ## 🤝 Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
 
 1. Fork the repository
 2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+3. Commit your changes (`git commit -m 'feat: add some amazing feature'`)
 4. Push to the branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed guidelines.
 
 ## 📝 License
 

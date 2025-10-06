@@ -1,0 +1,246 @@
+name: Auto Version Bump
+
+on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - '**.md'
+      - '.github/**'
+      - 'docs/**'
+  workflow_dispatch:
+    inputs:
+      bump_type:
+        description: 'Version bump type'
+        required: true
+        type: choice
+        options:
+          - patch
+          - minor
+          - major
+        default: 'patch'
+      prerelease:
+        description: 'Pre-release suffix (e.g., rc, beta, alpha)'
+        required: false
+        type: string
+
+permissions:
+  contents: write
+  id-token: write
+
+jobs:
+  bump-version:
+    name: Bump Version and Create Release
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+        token: ${{ secrets.GITHUB_TOKEN }}
+    
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install packaging
+    
+    - name: Get current version
+      id: current_version
+      run: |
+        # Extract version from wifijam/__init__.py
+        CURRENT_VERSION=$(grep -oP '__version__\s*=\s*"\K[^"]+' wifijam/__init__.py)
+        echo "current=$CURRENT_VERSION" >> $GITHUB_OUTPUT
+        echo "Current version: $CURRENT_VERSION"
+    
+    - name: Determine bump type
+      id: bump_type
+      run: |
+        if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+          echo "type=${{ inputs.bump_type }}" >> $GITHUB_OUTPUT
+        else
+          # Auto-detect from commit messages
+          COMMITS=$(git log --format=%B -n 10)
+          
+          if echo "$COMMITS" | grep -qiE "^(BREAKING CHANGE|major):"; then
+            echo "type=major" >> $GITHUB_OUTPUT
+          elif echo "$COMMITS" | grep -qiE "^(feat|feature|minor):"; then
+            echo "type=minor" >> $GITHUB_OUTPUT
+          else
+            echo "type=patch" >> $GITHUB_OUTPUT
+          fi
+        fi
+    
+    - name: Calculate new version
+      id: new_version
+      run: |
+        python - <<EOF
+        from packaging import version
+        import os
+        
+        current = "${{ steps.current_version.outputs.current }}"
+        bump_type = "${{ steps.bump_type.outputs.type }}"
+        prerelease = "${{ inputs.prerelease }}"
+        
+        # Parse current version
+        v = version.parse(current)
+        major, minor, patch = v.major, v.minor, v.micro
+        
+        # Bump version
+        if bump_type == "major":
+            major += 1
+            minor = 0
+            patch = 0
+        elif bump_type == "minor":
+            minor += 1
+            patch = 0
+        else:  # patch
+            patch += 1
+        
+        # Create new version string
+        new_version = f"{major}.{minor}.{patch}"
+        
+        # Add prerelease suffix if provided
+        if prerelease:
+            new_version = f"{new_version}-{prerelease}.1"
+        
+        # Write to GitHub output
+        with open(os.environ['GITHUB_OUTPUT'], 'a') as f:
+            f.write(f"version={new_version}\n")
+            f.write(f"tag=v{new_version}\n")
+        
+        print(f"New version: {new_version}")
+        EOF
+    
+    - name: Check if version already exists
+      id: check_version
+      run: |
+        TAG="${{ steps.new_version.outputs.tag }}"
+        if git rev-parse "$TAG" >/dev/null 2>&1; then
+          echo "exists=true" >> $GITHUB_OUTPUT
+          echo "⚠️ Tag $TAG already exists!"
+        else
+          echo "exists=false" >> $GITHUB_OUTPUT
+          echo "✅ Tag $TAG is new"
+        fi
+    
+    - name: Update version in files
+      if: steps.check_version.outputs.exists == 'false'
+      run: |
+        NEW_VERSION="${{ steps.new_version.outputs.version }}"
+        
+        # Update wifijam/__init__.py
+        sed -i "s/__version__ = \".*\"/__version__ = \"$NEW_VERSION\"/" wifijam/__init__.py
+        
+        # Update setup.py
+        sed -i "s/version=\".*\"/version=\"$NEW_VERSION\"/" setup.py
+        
+        # Update pyproject.toml
+        sed -i "s/^version = \".*\"/version = \"$NEW_VERSION\"/" pyproject.toml
+        
+        echo "✅ Updated version to $NEW_VERSION in all files"
+    
+    - name: Verify version updates
+      if: steps.check_version.outputs.exists == 'false'
+      run: |
+        echo "=== wifijam/__init__.py ==="
+        grep "__version__" wifijam/__init__.py
+        
+        echo "=== setup.py ==="
+        grep "version=" setup.py | head -1
+        
+        echo "=== pyproject.toml ==="
+        grep "^version" pyproject.toml
+    
+    - name: Configure Git
+      if: steps.check_version.outputs.exists == 'false'
+      run: |
+        git config user.name "github-actions[bot]"
+        git config user.email "github-actions[bot]@users.noreply.github.com"
+    
+    - name: Commit version bump
+      if: steps.check_version.outputs.exists == 'false'
+      run: |
+        NEW_VERSION="${{ steps.new_version.outputs.version }}"
+        BUMP_TYPE="${{ steps.bump_type.outputs.type }}"
+        
+        git add wifijam/__init__.py setup.py pyproject.toml
+        git commit -m "chore: bump version to $NEW_VERSION ($BUMP_TYPE)"
+        
+        echo "✅ Committed version bump"
+    
+    - name: Create and push tag
+      if: steps.check_version.outputs.exists == 'false'
+      run: |
+        TAG="${{ steps.new_version.outputs.tag }}"
+        NEW_VERSION="${{ steps.new_version.outputs.version }}"
+        
+        git tag -a "$TAG" -m "Release $TAG"
+        
+        # Push commit and tag
+        git push origin main
+        git push origin "$TAG"
+        
+        echo "✅ Created and pushed tag $TAG"
+    
+    - name: Generate release notes
+      if: steps.check_version.outputs.exists == 'false'
+      id: release_notes
+      run: |
+        TAG="${{ steps.new_version.outputs.tag }}"
+        PREV_TAG=$(git describe --abbrev=0 --tags $(git rev-list --tags --skip=1 --max-count=1) 2>/dev/null || echo "")
+        
+        if [ -z "$PREV_TAG" ]; then
+          NOTES="Initial release"
+        else
+          NOTES=$(git log ${PREV_TAG}..HEAD --pretty=format:"- %s (%h)" --no-merges)
+        fi
+        
+        # Write to file to handle multiline
+        echo "$NOTES" > release_notes.txt
+        
+        echo "✅ Generated release notes"
+    
+    - name: Create GitHub Release
+      if: steps.check_version.outputs.exists == 'false'
+      uses: softprops/action-gh-release@v1
+      with:
+        tag_name: ${{ steps.new_version.outputs.tag }}
+        name: WIFIjam ${{ steps.new_version.outputs.tag }}
+        body_path: release_notes.txt
+        draft: false
+        prerelease: ${{ inputs.prerelease != '' }}
+        generate_release_notes: true
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    
+    - name: Summary
+      if: steps.check_version.outputs.exists == 'false'
+      run: |
+        echo "# Version Bump Summary" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "| Item | Value |" >> $GITHUB_STEP_SUMMARY
+        echo "|------|-------|" >> $GITHUB_STEP_SUMMARY
+        echo "| Previous Version | ${{ steps.current_version.outputs.current }} |" >> $GITHUB_STEP_SUMMARY
+        echo "| New Version | ${{ steps.new_version.outputs.version }} |" >> $GITHUB_STEP_SUMMARY
+        echo "| Bump Type | ${{ steps.bump_type.outputs.type }} |" >> $GITHUB_STEP_SUMMARY
+        echo "| Tag | ${{ steps.new_version.outputs.tag }} |" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "✅ Version bumped successfully!" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "The PyPI publish workflow will be triggered automatically." >> $GITHUB_STEP_SUMMARY
+    
+    - name: Skip summary
+      if: steps.check_version.outputs.exists == 'true'
+      run: |
+        echo "# Version Bump Skipped" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "⚠️ Tag ${{ steps.new_version.outputs.tag }} already exists." >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "No version bump performed." >> $GITHUB_STEP_SUMMARY
+
