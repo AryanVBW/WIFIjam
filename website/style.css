@@ -736,9 +736,16 @@ a:hover, a:focus {
 .os-pill.arch { color: #7fd6ff; border-color: #7fd6ff; }
 .os-pill.mac { color: #ffb86c; border-color: #ffb86c; }
 .os-pill.win { color: #b388ff; border-color: #b388ff; }
+.cta-buttons {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  margin-top: 1.2em;
+  flex-wrap: wrap;
+}
+
 .cta-btn {
   display: inline-block;
-  margin-top: 1.2em;
   padding: 0.7em 2.2em;
   font-size: 1.13em;
   font-weight: 700;
@@ -751,10 +758,22 @@ a:hover, a:focus {
   letter-spacing: 0.04em;
   transition: background 0.2s, color 0.2s, box-shadow 0.2s;
 }
+
 .cta-btn:hover, .cta-btn:focus {
   background: linear-gradient(120deg, #3a7bd5 0%, #00d2ff 100%);
   color: #23293a;
   box-shadow: 0 4px 24px #00d2ff55;
+}
+
+.cta-btn-secondary {
+  background: linear-gradient(120deg, #ff6b6b 0%, #ff8e53 100%);
+  box-shadow: 0 2px 12px #ff6b6b33;
+}
+
+.cta-btn-secondary:hover, .cta-btn-secondary:focus {
+  background: linear-gradient(120deg, #ff8e53 0%, #ff6b6b 100%);
+  color: white;
+  box-shadow: 0 4px 24px #ff6b6b55;
 }
 @media (max-width: 900px) {
   .intro-glass {

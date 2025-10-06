@@ -28,9 +28,9 @@ window.addEventListener('scroll', () => {
   });
 });
 
-// Copy to clipboard for install command
-const copyBtn = document.querySelector('.copy-btn');
-if (copyBtn) {
+// Copy to clipboard for install commands
+const copyBtns = document.querySelectorAll('.copy-btn');
+copyBtns.forEach(copyBtn => {
   copyBtn.addEventListener('click', function() {
     const targetId = this.getAttribute('data-copytarget');
     const code = document.getElementById(targetId);
@@ -43,10 +43,24 @@ if (copyBtn) {
           copyBtn.textContent = 'Copy';
           copyBtn.classList.remove('copied');
         }, 1200);
+      }).catch(() => {
+        // Fallback for older browsers
+        const textArea = document.createElement('textarea');
+        textArea.value = text;
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
+        copyBtn.textContent = 'Copied!';
+        copyBtn.classList.add('copied');
+        setTimeout(() => {
+          copyBtn.textContent = 'Copy';
+          copyBtn.classList.remove('copied');
+        }, 1200);
       });
     }
   });
-}
+});
 
 // Header shrink on scroll
 const header = document.querySelector('header');

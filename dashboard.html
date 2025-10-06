@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WIFIjam Dashboard</title>
+  <link rel="stylesheet" href="website/dashboard.css">
+  <link rel="icon" href="wifiB.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+  <div class="dashboard-container">
+    <!-- Sidebar Navigation -->
+    <aside class="dashboard-sidebar">
+      <div class="sidebar-header">
+        <img src="Logo/OIG__17_-removebg-preview.png" alt="WIFIjam Logo" class="logo">
+        <h2 class="brand-title">WIFIjam</h2>
+      </div>
+      
+      <nav class="sidebar-nav">
+        <ul class="nav-list">
+          <li class="nav-item active" data-section="dashboard">
+            <i class="fas fa-tachometer-alt"></i>
+            <span>Dashboard</span>
+          </li>
+          <li class="nav-item" data-section="scanner">
+            <i class="fas fa-radar"></i>
+            <span>Network Scanner</span>
+          </li>
+          <li class="nav-item" data-section="attack">
+            <i class="fas fa-bolt"></i>
+            <span>Attack Panel</span>
+          </li>
+          <li class="nav-item" data-section="config">
+            <i class="fas fa-cog"></i>
+            <span>Configuration</span>
+          </li>
+          <li class="nav-item" data-section="logs">
+            <i class="fas fa-file-alt"></i>
+            <span>Logs</span>
+          </li>
+          <li class="nav-item" data-section="help">
+            <i class="fas fa-question-circle"></i>
+            <span>Help</span>
+          </li>
+        </ul>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="system-status">
+          <div class="status-indicator" id="systemStatus">
+            <div class="status-dot"></div>
+            <span class="status-text">System Ready</span>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="dashboard-main">
+      <!-- Top Header -->
+      <header class="dashboard-header">
+        <div class="header-left">
+          <button class="sidebar-toggle" id="sidebarToggle">
+            <i class="fas fa-bars"></i>
+          </button>
+          <h1 class="page-title" id="pageTitle">Dashboard</h1>
+        </div>
+        
+        <div class="header-right">
+          <div class="quick-stats">
+            <div class="stat-item">
+              <i class="fas fa-wifi"></i>
+              <span class="stat-value" id="networkCount">0</span>
+              <span class="stat-label">Networks</span>
+            </div>
+            <div class="stat-item">
+              <i class="fas fa-shield-alt"></i>
+              <span class="stat-value" id="targetCount">0</span>
+              <span class="stat-label">Targets</span>
+            </div>
+          </div>
+          
+          <div class="header-actions">
+            <button class="action-btn emergency-stop" id="emergencyStop">
+              <i class="fas fa-stop"></i>
+              Emergency Stop
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <!-- Content Sections -->
+      <div class="content-wrapper">
+        
+        <!-- Dashboard Section -->
+        <section class="content-section active" id="dashboard-section">
+          <div class="dashboard-grid">
+            
+            <!-- System Overview Card -->
+            <div class="dashboard-card system-overview">
+              <div class="card-header">
+                <h3><i class="fas fa-desktop"></i> System Overview</h3>
+              </div>
+              <div class="card-content">
+                <div class="overview-stats">
+                  <div class="overview-item">
+                    <div class="overview-icon">
+                      <i class="fas fa-laptop"></i>
+                    </div>
+                    <div class="overview-info">
+                      <span class="overview-label">Operating System</span>
+                      <span class="overview-value" id="osInfo">Detecting...</span>
+                    </div>
+                  </div>
+                  
+                  <div class="overview-item">
+                    <div class="overview-icon">
+                      <i class="fas fa-network-wired"></i>
+                    </div>
+                    <div class="overview-info">
+                      <span class="overview-label">WiFi Adapter</span>
+                      <span class="overview-value" id="adapterInfo">Detecting...</span>
+                    </div>
+                  </div>
+                  
+                  <div class="overview-item">
+                    <div class="overview-icon">
+                      <i class="fas fa-eye"></i>
+                    </div>
+                    <div class="overview-info">
+                      <span class="overview-label">Monitor Mode</span>
+                      <span class="overview-value" id="monitorMode">Checking...</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Real-time Activity Card -->
+            <div class="dashboard-card activity-feed">
+              <div class="card-header">
+                <h3><i class="fas fa-chart-line"></i> Real-time Activity</h3>
+                <div class="card-actions">
+                  <button class="card-btn" id="clearActivity">
+                    <i class="fas fa-trash"></i>
+                  </button>
+                </div>
+              </div>
+              <div class="card-content">
+                <div class="activity-list" id="activityList">
+                  <div class="activity-item">
+                    <div class="activity-time">12:34:56</div>
+                    <div class="activity-message">System initialized</div>
+                    <div class="activity-status success">
+                      <i class="fas fa-check"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Quick Actions Card -->
+            <div class="dashboard-card quick-actions">
+              <div class="card-header">
+                <h3><i class="fas fa-lightning-bolt"></i> Quick Actions</h3>
+              </div>
+              <div class="card-content">
+                <div class="action-grid">
+                  <button class="quick-action-btn scan-btn" data-action="scan">
+                    <i class="fas fa-search"></i>
+                    <span>Quick Scan</span>
+                  </button>
+                  
+                  <button class="quick-action-btn monitor-btn" data-action="monitor">
+                    <i class="fas fa-eye"></i>
+                    <span>Monitor Mode</span>
+                  </button>
+                  
+                  <button class="quick-action-btn config-btn" data-action="config">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
+                  </button>
+                  
+                  <button class="quick-action-btn help-btn" data-action="help">
+                    <i class="fas fa-question"></i>
+                    <span>Help</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Network Statistics -->
+            <div class="dashboard-card network-stats">
+              <div class="card-header">
+                <h3><i class="fas fa-chart-pie"></i> Network Statistics</h3>
+              </div>
+              <div class="card-content">
+                <div class="stats-container">
+                  <div class="stat-circle">
+                    <div class="circle-progress" data-percent="0" id="securityChart">
+                      <div class="circle-inner">
+                        <span class="stat-number">0%</span>
+                        <span class="stat-description">Secured</span>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div class="stats-breakdown">
+                    <div class="breakdown-item">
+                      <div class="breakdown-color wpa"></div>
+                      <span class="breakdown-label">WPA/WPA2</span>
+                      <span class="breakdown-value" id="wpaCount">0</span>
+                    </div>
+                    <div class="breakdown-item">
+                      <div class="breakdown-color wep"></div>
+                      <span class="breakdown-label">WEP</span>
+                      <span class="breakdown-value" id="wepCount">0</span>
+                    </div>
+                    <div class="breakdown-item">
+                      <div class="breakdown-color open"></div>
+                      <span class="breakdown-label">Open</span>
+                      <span class="breakdown-value" id="openCount">0</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+        <!-- Network Scanner Section -->
+        <section class="content-section" id="scanner-section">
+          <div class="scanner-container">
+            
+            <!-- Scanner Controls -->
+            <div class="dashboard-card scanner-controls">
+              <div class="card-header">
+                <h3><i class="fas fa-radar"></i> Network Scanner</h3>
+                <div class="card-actions">
+                  <button class="card-btn scan-toggle" id="scanToggle">
+                    <i class="fas fa-play"></i>
+                    Start Scan
+                  </button>
+                </div>
+              </div>
+              <div class="card-content">
+                <div class="scanner-options">
+                  <div class="option-group">
+                    <label>Interface:</label>
+                    <select id="interfaceSelect" class="form-select">
+                      <option value="">Select WiFi Interface...</option>
+                    </select>
+                  </div>
+                  
+                  <div class="option-group">
+                    <label>Scan Duration:</label>
+                    <select id="scanDuration" class="form-select">
+                      <option value="10">10 seconds</option>
+                      <option value="30" selected>30 seconds</option>
+                      <option value="60">1 minute</option>
+                      <option value="300">5 minutes</option>
+                      <option value="-1">Continuous</option>
+                    </select>
+                  </div>
+                  
+                  <div class="option-group">
+                    <label>Channel:</label>
+                    <select id="channelSelect" class="form-select">
+                      <option value="all">All Channels</option>
+                      <option value="1">Channel 1</option>
+                      <option value="6">Channel 6</option>
+                      <option value="11">Channel 11</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Networks Visualization -->
+            <div class="dashboard-card networks-visualization">
+              <div class="card-header">
+                <h3><i class="fas fa-network-wired"></i> Discovered Networks</h3>
+                <div class="card-actions">
+                  <button class="card-btn" id="exportNetworks">
+                    <i class="fas fa-download"></i>
+                    Export
+                  </button>
+                  <button class="card-btn" id="refreshNetworks">
+                    <i class="fas fa-sync"></i>
+                  </button>
+                </div>
+              </div>
+              <div class="card-content">
+                <div class="networks-table-container">
+                  <table class="networks-table" id="networksTable">
+                    <thead>
+                      <tr>
+                        <th>SSID</th>
+                        <th>BSSID</th>
+                        <th>Channel</th>
+                        <th>Security</th>
+                        <th>Signal</th>
+                        <th>Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody id="networksTableBody">
+                      <!-- Networks will be populated here -->
+                    </tbody>
+                  </table>
+                  
+                  <div class="no-networks-message" id="noNetworksMessage">
+                    <i class="fas fa-search"></i>
+                    <p>No networks found. Start a scan to discover networks.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+        <!-- Attack Panel Section -->
+        <section class="content-section" id="attack-section">
+          <div class="attack-container">
+            
+            <!-- Target Selection -->
+            <div class="dashboard-card target-selection">
+              <div class="card-header">
+                <h3><i class="fas fa-crosshairs"></i> Target Selection</h3>
+              </div>
+              <div class="card-content">
+                <div class="target-info" id="targetInfo">
+                  <div class="no-target">
+                    <i class="fas fa-bullseye"></i>
+                    <p>No target selected. Choose a network from the scanner.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Attack Configuration -->
+            <div class="dashboard-card attack-config">
+              <div class="card-header">
+                <h3><i class="fas fa-bolt"></i> Attack Configuration</h3>
+              </div>
+              <div class="card-content">
+                <div class="attack-options">
+                  <div class="attack-type">
+                    <label>Attack Type:</label>
+                    <select id="attackType" class="form-select">
+                      <option value="deauth">Deauthentication</option>
+                      <option value="jam24">Jam 2.4GHz</option>
+                      <option value="jam5">Jam 5GHz</option>
+                    </select>
+                  </div>
+                  
+                  <div class="attack-params">
+                    <div class="param-group">
+                      <label>Packet Count:</label>
+                      <input type="number" id="packetCount" class="form-input" value="100" min="1" max="10000">
+                    </div>
+                    
+                    <div class="param-group">
+                      <label>Delay (ms):</label>
+                      <input type="number" id="packetDelay" class="form-input" value="100" min="10" max="5000">
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Attack Controls -->
+            <div class="dashboard-card attack-controls">
+              <div class="card-header">
+                <h3><i class="fas fa-play-circle"></i> Attack Controls</h3>
+              </div>
+              <div class="card-content">
+                <div class="attack-buttons">
+                  <button class="attack-btn start-attack" id="startAttack" disabled>
+                    <i class="fas fa-play"></i>
+                    Start Attack
+                  </button>
+                  
+                  <button class="attack-btn stop-attack" id="stopAttack" disabled>
+                    <i class="fas fa-stop"></i>
+                    Stop Attack
+                  </button>
+                  
+                  <button class="attack-btn test-attack" id="testAttack">
+                    <i class="fas fa-vial"></i>
+                    Test Configuration
+                  </button>
+                </div>
+                
+                <div class="attack-progress" id="attackProgress">
+                  <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                  </div>
+                  <div class="progress-text" id="progressText">Ready</div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+        <!-- Configuration Section -->
+        <section class="content-section" id="config-section">
+          <div class="config-container">
+            
+            <!-- Network Interface Configuration -->
+            <div class="dashboard-card interface-config">
+              <div class="card-header">
+                <h3><i class="fas fa-network-wired"></i> Network Interface</h3>
+              </div>
+              <div class="card-content">
+                <div class="config-form">
+                  <div class="form-group">
+                    <label>Primary Interface:</label>
+                    <select id="primaryInterface" class="form-select">
+                      <option value="">Auto-detect</option>
+                    </select>
+                  </div>
+                  
+                  <div class="form-group">
+                    <label>Monitor Mode:</label>
+                    <div class="toggle-switch">
+                      <input type="checkbox" id="monitorModeToggle">
+                      <label for="monitorModeToggle" class="toggle-label"></label>
+                    </div>
+                  </div>
+                  
+                  <div class="form-group">
+                    <label>Channel Hopping:</label>
+                    <div class="toggle-switch">
+                      <input type="checkbox" id="channelHopping" checked>
+                      <label for="channelHopping" class="toggle-label"></label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Attack Settings -->
+            <div class="dashboard-card attack-settings">
+              <div class="card-header">
+                <h3><i class="fas fa-cog"></i> Attack Settings</h3>
+              </div>
+              <div class="card-content">
+                <div class="config-form">
+                  <div class="form-group">
+                    <label>Default Packet Count:</label>
+                    <input type="number" id="defaultPacketCount" class="form-input" value="100">
+                  </div>
+                  
+                  <div class="form-group">
+                    <label>Default Delay (ms):</label>
+                    <input type="number" id="defaultDelay" class="form-input" value="100">
+                  </div>
+                  
+                  <div class="form-group">
+                    <label>Auto-save Logs:</label>
+                    <div class="toggle-switch">
+                      <input type="checkbox" id="autoSaveLogs" checked>
+                      <label for="autoSaveLogs" class="toggle-label"></label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Application Settings -->
+            <div class="dashboard-card app-settings">
+              <div class="card-header">
+                <h3><i class="fas fa-sliders-h"></i> Application Settings</h3>
+              </div>
+              <div class="card-content">
+                <div class="config-form">
+                  <div class="form-group">
+                    <label>Theme:</label>
+                    <select id="themeSelect" class="form-select">
+                      <option value="dark">Dark</option>
+                      <option value="light">Light</option>
+                      <option value="auto">Auto</option>
+                    </select>
+                  </div>
+                  
+                  <div class="form-group">
+                    <label>Real-time Updates:</label>
+                    <div class="toggle-switch">
+                      <input type="checkbox" id="realTimeUpdates" checked>
+                      <label for="realTimeUpdates" class="toggle-label"></label>
+                    </div>
+                  </div>
+                  
+                  <div class="form-group">
+                    <label>Sound Notifications:</label>
+                    <div class="toggle-switch">
+                      <input type="checkbox" id="soundNotifications">
+                      <label for="soundNotifications" class="toggle-label"></label>
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="config-actions">
+                  <button class="config-btn save-config" id="saveConfig">
+                    <i class="fas fa-save"></i>
+                    Save Configuration
+                  </button>
+                  
+                  <button class="config-btn reset-config" id="resetConfig">
+                    <i class="fas fa-undo"></i>
+                    Reset to Defaults
+                  </button>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+        <!-- Logs Section -->
+        <section class="content-section" id="logs-section">
+          <div class="logs-container">
+            
+            <!-- Log Controls -->
+            <div class="dashboard-card log-controls">
+              <div class="card-header">
+                <h3><i class="fas fa-file-alt"></i> System Logs</h3>
+                <div class="card-actions">
+                  <button class="card-btn" id="clearLogs">
+                    <i class="fas fa-trash"></i>
+                    Clear
+                  </button>
+                  <button class="card-btn" id="downloadLogs">
+                    <i class="fas fa-download"></i>
+                    Download
+                  </button>
+                </div>
+              </div>
+              <div class="card-content">
+                <div class="log-filters">
+                  <select id="logLevel" class="form-select">
+                    <option value="all">All Levels</option>
+                    <option value="info">Info</option>
+                    <option value="warning">Warning</option>
+                    <option value="error">Error</option>
+                    <option value="debug">Debug</option>
+                  </select>
+                  
+                  <div class="toggle-switch">
+                    <input type="checkbox" id="autoScroll" checked>
+                    <label for="autoScroll" class="toggle-label">Auto-scroll</label>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Log Display -->
+            <div class="dashboard-card log-display">
+              <div class="card-content">
+                <div class="log-viewer" id="logViewer">
+                  <div class="log-entry info">
+                    <span class="log-time">2025-10-04 12:34:56</span>
+                    <span class="log-level">INFO</span>
+                    <span class="log-message">WIFIjam dashboard initialized</span>
+                  </div>
+                  <div class="log-entry success">
+                    <span class="log-time">2025-10-04 12:34:57</span>
+                    <span class="log-level">SUCCESS</span>
+                    <span class="log-message">System ready for operations</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+        <!-- Help Section -->
+        <section class="content-section" id="help-section">
+          <div class="help-container">
+            
+            <!-- Quick Help -->
+            <div class="dashboard-card quick-help">
+              <div class="card-header">
+                <h3><i class="fas fa-question-circle"></i> Quick Help</h3>
+              </div>
+              <div class="card-content">
+                <div class="help-topics">
+                  <div class="help-topic" data-topic="getting-started">
+                    <i class="fas fa-play-circle"></i>
+                    <span>Getting Started</span>
+                  </div>
+                  <div class="help-topic" data-topic="scanning">
+                    <i class="fas fa-radar"></i>
+                    <span>Network Scanning</span>
+                  </div>
+                  <div class="help-topic" data-topic="attacks">
+                    <i class="fas fa-bolt"></i>
+                    <span>Attack Types</span>
+                  </div>
+                  <div class="help-topic" data-topic="troubleshooting">
+                    <i class="fas fa-wrench"></i>
+                    <span>Troubleshooting</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Help Content -->
+            <div class="dashboard-card help-content">
+              <div class="card-header">
+                <h3 id="helpTopicTitle">Getting Started</h3>
+              </div>
+              <div class="card-content">
+                <div class="help-text" id="helpContent">
+                  <h4>Welcome to WIFIjam</h4>
+                  <p>This is a powerful WiFi security testing tool designed for educational and authorized testing purposes only.</p>
+                  
+                  <h5>Basic Steps:</h5>
+                  <ol>
+                    <li>Ensure your WiFi adapter supports monitor mode</li>
+                    <li>Configure your network interface in the Configuration section</li>
+                    <li>Start scanning for networks</li>
+                    <li>Select a target network</li>
+                    <li>Configure and execute attacks responsibly</li>
+                  </ol>
+                  
+                  <div class="warning-box">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <strong>Important:</strong> Only use this tool on networks you own or have explicit permission to test.
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- Loading Overlay -->
+  <div class="loading-overlay" id="loadingOverlay">
+    <div class="loading-spinner">
+      <div class="spinner"></div>
+      <p class="loading-text">Initializing WIFIjam...</p>
+    </div>
+  </div>
+
+  <!-- Notification Container -->
+  <div class="notification-container" id="notificationContainer"></div>
+
+  <!-- Scripts -->
+  <script src="website/dashboard.js"></script>
+  <script src="website/api-mock.js"></script>
+</body>
+</html>
