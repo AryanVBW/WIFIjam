@@ -1,0 +1,9 @@
+# Core dependencies
+aiohttp>=3.9.0
+aiohttp-cors>=0.7.0
+scapy>=2.5.0
+
+# Optional dependencies for enhanced functionality
+psutil>=5.9.0  # System monitoring
+netifaces>=0.11.0  # Network interface information
+

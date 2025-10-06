@@ -1,0 +1,26 @@
+# Include documentation
+include README.md
+include README_NEW.md
+include LICENSE
+include requirements.txt
+
+# Include dashboard files
+include dashboard.html
+include index.html
+recursive-include website *
+
+# Include logo and images
+recursive-include Logo *.png *.jpg *.jpeg
+include *.png
+
+# Include shell scripts
+include *.sh
+include *.bat
+
+# Exclude unnecessary files
+global-exclude __pycache__
+global-exclude *.py[co]
+global-exclude .DS_Store
+global-exclude *.swp
+global-exclude *.swo
+
