@@ -21,6 +21,9 @@ from wifijam.wifi.adapter import WiFiAdapter
 
 logger = get_logger(__name__)
 
+# Pre-compile regex patterns for better performance
+BSSID_PATTERN = re.compile(r'^([0-9A-Fa-f]{2}:){5}[0-9A-Fa-f]{2}$')
+
 
 class SecurityType(Enum):
     """WiFi security types."""
@@ -162,13 +165,21 @@ class NetworkScanner:
             # Monitor the CSV file
             csv_file = Path(f"{output_prefix}-01.csv")
             start_time = time.time()
+            last_modified = 0
             
             while self.is_scanning:
                 if duration > 0 and (time.time() - start_time) >= duration:
                     break
                 
+                # Only parse if file exists and has been modified
                 if csv_file.exists():
-                    self._parse_airodump_csv(csv_file)
+                    try:
+                        current_modified = csv_file.stat().st_mtime
+                        if current_modified > last_modified:
+                            self._parse_airodump_csv(csv_file)
+                            last_modified = current_modified
+                    except OSError:
+                        pass  # File might be temporarily unavailable
                 
                 time.sleep(2)
             
@@ -193,7 +204,8 @@ class NetworkScanner:
     def _parse_airodump_csv(self, csv_file: Path) -> None:
         """Parse airodump-ng CSV output."""
         try:
-            with open(csv_file, 'r', encoding='utf-8', errors='ignore') as f:
+            # Use buffered reading for better performance
+            with open(csv_file, 'r', encoding='utf-8', errors='ignore', buffering=8192) as f:
                 content = f.read()
             
             # Split into AP and client sections
@@ -206,12 +218,9 @@ class NetworkScanner:
             if len(lines) < 2:
                 return
             
-            # Skip header lines
-            data_start = 0
-            for i, line in enumerate(lines):
-                if line.strip().startswith('BSSID'):
-                    data_start = i + 1
-                    break
+            # Skip header lines - find start of data more efficiently
+            data_start = next((i + 1 for i, line in enumerate(lines) 
+                             if line.strip().startswith('BSSID')), 0)
             
             # Parse network data
             for line in lines[data_start:]:
@@ -224,7 +233,7 @@ class NetworkScanner:
                         continue
                     
                     bssid = parts[0]
-                    if not bssid or not re.match(r'^([0-9A-Fa-f]{2}:){5}[0-9A-Fa-f]{2}$', bssid):
+                    if not bssid or not BSSID_PATTERN.match(bssid):
                         continue
                     
                     # Extract network information
@@ -285,6 +294,7 @@ class NetworkScanner:
         """Scan using iw command."""
         logger.info("Scanning with iw command...")
         start_time = time.time()
+        scan_interval = 5  # Configurable scan interval
         
         while self.is_scanning:
             if duration > 0 and (time.time() - start_time) >= duration:
@@ -306,7 +316,14 @@ class NetworkScanner:
             except Exception as e:
                 logger.error(f"Error in iw scan: {e}")
             
-            time.sleep(5)
+            # Use adaptive sleep based on remaining time
+            if duration > 0:
+                remaining = duration - (time.time() - start_time)
+                sleep_time = min(scan_interval, max(0, remaining))
+                if sleep_time > 0:
+                    time.sleep(sleep_time)
+            else:
+                time.sleep(scan_interval)
     
     def _parse_iw_scan(self, output: str) -> None:
         """Parse iw scan output."""
