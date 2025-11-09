@@ -98,14 +98,21 @@ class WebSocketManager:
         if not self.connections:
             return
         
-        # Create tasks for sending to all connections
-        tasks = []
-        for ws in self.connections.copy():
-            if not ws.closed:
-                tasks.append(self._send_safe(ws, message))
+        # Filter out closed connections first to avoid unnecessary work
+        active_connections = [ws for ws in self.connections if not ws.closed]
         
-        if tasks:
-            await asyncio.gather(*tasks, return_exceptions=True)
+        # Clean up closed connections from the set
+        if len(active_connections) < len(self.connections):
+            self.connections = set(active_connections)
+        
+        if not active_connections:
+            return
+        
+        # Create tasks for sending to all active connections concurrently
+        tasks = [self._send_safe(ws, message) for ws in active_connections]
+        
+        # Use asyncio.gather for concurrent execution with exception handling
+        await asyncio.gather(*tasks, return_exceptions=True)
     
     async def _send_safe(self, ws: web.WebSocketResponse, message: Dict[str, Any]) -> None:
         """
@@ -118,7 +125,7 @@ class WebSocketManager:
         try:
             await ws.send_json(message)
         except Exception as e:
-            logger.error(f"Error sending WebSocket message: {e}")
+            logger.debug(f"Error sending WebSocket message: {e}")
             self.connections.discard(ws)
     
     async def send_to(self, ws: web.WebSocketResponse, message: Dict[str, Any]) -> None:

